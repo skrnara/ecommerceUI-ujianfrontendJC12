@@ -14,7 +14,8 @@ const INITIAL_STATE={
     isLoggedIn:false,
     errorMessage:'',
     role:'',
-    registrationMessage:''
+    registrationMessage:'',
+    successRegistrationMessage:''
 
 }
 
@@ -33,7 +34,7 @@ export default (state=INITIAL_STATE, action)=>{
         case USER_REGISTER_FAILED:
             return {...state, loading:false, registrationMessage:action.payload}
         case USER_REGISTER_SUCCESS:
-            return {...state, loading:false, registrationMessage:action.payload}
+            return {...state, loading:false, successRegistrationMessage:action.payload}
         
         
         case 'ErrorClear':

@@ -60,7 +60,7 @@ const ProductDetail = (props) => {
             .then((res1)=>{
                 if(res1.data.length){
                     var objTransactionDetails={
-                        trnsactionId:res1.data[0].id,
+                        transactionId:res1.data[0].id,
                         productId:data.id,
                         qty:qty
                     }
@@ -68,8 +68,8 @@ const ProductDetail = (props) => {
                     .then((res3)=>{
                         Swal.fire({
                             icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Barang Masuk ke Cart',
+                            text: 'Item successfully added to cart',
+                            confirmButtonColor: '#000',
                         })
                     })
                 }

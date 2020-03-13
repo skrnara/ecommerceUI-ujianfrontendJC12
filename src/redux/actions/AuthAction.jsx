@@ -48,33 +48,20 @@ export const registerUser=({newUsername, newPassword, newConfirmPassword})=>{
             dispatch({type:USER_REGISTER_FAILED, payload: `pls fill all input correctly`})
         }
         else if(newPassword!==newConfirmPassword){
-            dispatch({type:USER_REGISTER_FAILED, payload: `Cannot confirm password, please type new password correctly`})
+            dispatch({type:USER_REGISTER_FAILED, payload: `Cannot confirm password. Please type new password correctly`})
         }
         else{
-            Axios.get(`${API_URL}/users`)
+            Axios.get(`${API_URL}/users?username=${newUsername}`)
             .then((res)=>{
-                var toCheckUsername=res.data
-                toCheckUsername.forEach((val)=>{
-                    // console.log(val.username)
-                    // console.log(newUsername)
-                    if(newUsername===val.username){
-                        return dispatch({type:USER_REGISTER_FAILED, payload:`username already exist, pick a new one`})
-                    } 
-                    // else if(newUsername!==val.username){
-                    //     return(
-                    //         Axios.post(`${API_URL}/users`, {username:newUsername, password:newPassword, role:"user"})
-                    //         .then((res)=>{
-    
-                    //         })
-                    //         .catch((err)=>{
-                    //             console.log(err)
-                    //         })
-                        
-                    //     )
-                        
-
-                    // }
-                })
+                console.log(res.data)
+                if(res.data.length>0){
+                    dispatch({type:USER_REGISTER_FAILED, payload: `username already exist`})
+                    console.log('blyat')
+                }
+                else{
+                    dispatch({type:USER_REGISTER_SUCCESS, payload: `registration successful`})
+                    Axios.post(`${API_URL}/users`, {username:newUsername, password:newPassword, role:"user"})
+                }
             })
             .catch((err)=>{
                 console.log(err)

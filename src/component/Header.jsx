@@ -81,20 +81,7 @@ render() {
             <MDBNavItem>
               {
                 this.props.User.isLoggedIn?
-                null
-                :
-                
-                  
-                <MDBNavLink to="/login" style={{color:"black"}}>
-                  Login
-                </MDBNavLink>
-                
-              }
-            </MDBNavItem>
-            <MDBNavItem>
-              {
-                this.props.User.username?
-                  <>
+                <div className="d-flex justify-content-center" style={{marginLeft:"-200px"}}>
                   <MDBNavItem>
                     <MDBNavLink to="/cart">
                       <GiShoppingCart style={{fontSize:"24px", color:"black"}}/>
@@ -110,10 +97,17 @@ render() {
                         <MDBDropdownItem onClick={this.logoutUser}><a href="/" style={{textDecoration:"none", color:"black"}}>Logout</a></MDBDropdownItem>
                       </MDBDropdownMenu>
                   </MDBDropdown>
-                  </>
-                :
-                null
+                </div>
+
+                :              
+                  
+                <MDBNavLink to="/login" style={{color:"black"}}>
+                  Login
+                </MDBNavLink>
+                
               }
+            </MDBNavItem>
+            <MDBNavItem>
             </MDBNavItem>
           </MDBNavbarNav>
         </MDBCollapse>

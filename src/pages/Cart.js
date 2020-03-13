@@ -9,20 +9,25 @@ class Cart extends Component {
     state = { 
         cartContent:[]
     }
+    
+    componentDidMount(){
+        this.getAllData()
+    }
 
     getAllData=()=>{
         Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${this.props.User.id}&status=oncart`)
         .then((res)=>{
+            console.log(this.props.User.id)
             console.log(res.data[0].transactiondetails)
             var newArrForProducts=[]
-            res.data[0].transactiondetails.forEach(element =>{
+            res.data[0].transactiondetails.forEach(element => {
                 newArrForProducts.push(Axios.get(`${API_URL}/products/${element.productId}`))
             });
             console.log(newArrForProducts)
             Axios.all(newArrForProducts)
             .then((res2)=>{
                 res2.forEach((val, index)=>{
-                        res.data[0].transactiondetails[index].productData=val.data
+                    res.data[0].transactiondetails[index].productData=val.data
                 })
                 console.log(res.data[0].transactiondetails)
                 this.setState({cartContent:res.data[0].transactiondetails})
@@ -35,9 +40,7 @@ class Cart extends Component {
         })
     }
 
-    componentDidMount(){
-        this.getAllData()
-    }
+    
 
     renderCartContentData=()=>{
         return this.state.cartContent.map((val, index)=>{
@@ -60,18 +63,19 @@ class Cart extends Component {
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#000',
+            cancelButtonColor: '#999',
+            confirmButtonText: 'Confirm'
           }).then((result) => {
             if (result.value) {
                 Axios.delete(`${API_URL}/transactiondetails/${id}`)
                 .then((res)=>{
-                    Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                  ).then((result)=>{
+                    Swal.fire({
+                    title:'Deleted!',
+                    text:'Item has been deleted from your cart.',
+                    icon:'success',
+                    confirmButtonColor: '#000'
+                    }).then((result)=>{
                       if(result.value){
                         this.getAllData()                    
                       }

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { MDBBtn, MDBInput, MDBAlert, MDBIcon } from 'mdbreact';
-import Axios from 'axios';
-import { API_URL} from './../supports/ApiURL';
 import { connect } from 'react-redux';
+import { Modal, ModalBody, Button, ModalFooter } from 'reactstrap';
 import { errorMessageClear, registerUser} from './../redux/actions';
+import { Redirect } from 'react-router-dom';
 
 const Register = (props) => {
     const[registerData, setRegisterData]=useState({
@@ -12,6 +12,12 @@ const Register = (props) => {
         newConfirmPassword:''
     })
 
+    const[moveToLogin, setMoveToLogin]=useState(false)
+    const[modal, setModal]=useState(true)
+    const toggle = () => setModal(!modal);
+    const {className} = props;
+    
+
     const dataOnChange=(e)=>{
        setRegisterData({...registerData, [e.target.name]:e.target.value})
     }
@@ -19,6 +25,15 @@ const Register = (props) => {
     const onRegisterFormSubmit=(e)=>{
         e.preventDefault()
         props.registerUser(registerData)
+    }
+
+    const redirectRegisteredUserToLogin=()=>{
+        setMoveToLogin(true)
+        setModal(false)
+    }
+
+    if(moveToLogin){
+        return <Redirect to="/login"/>
     }
 
     return (
@@ -40,9 +55,28 @@ const Register = (props) => {
                             :
                             null
                         }                       
+                        {
+                            props.successRegistrationMessage?
+                            <div>
+                                <Modal isOpen={modal} toggle={toggle} className={className}>
+                                    <ModalBody className="d-flex justify-content-center flex-column">
+                                        <div style={{textAlign:"center"}}>
+                                            <h3>Registration Successful</h3>
+                                            <p>Now you can now login to our website</p>
+                                        </div>
+                                    </ModalBody>   
+                                    <ModalFooter>
+                                        <Button className="btn-sm rounded-pill" color="black" onClick={redirectRegisteredUserToLogin}>Ok</Button>
+                                    </ModalFooter>                        
+                                </Modal>
+                            </div>
+                            :
+                            null
+                        }
                         <MDBBtn type="submit" disabled="" color="black" className="rounded-pill">Submit</MDBBtn>
                     </div>
                 </form>
+
             </div>            
         </>
     )

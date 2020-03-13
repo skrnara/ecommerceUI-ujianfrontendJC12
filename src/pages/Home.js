@@ -29,7 +29,7 @@ class Home extends Component {
             return(
                 <>
                 <Fade bottom>
-                <div className="col-md-3">
+                <div className="col-md-3" style={{marginTop:"5%"}}>
                     <Card>
                         <CardImg top width="100%" height="100%" src={val.image} alt="Card image cap" />
                         <div className="blackBox d-flex justify-content-center">
@@ -53,7 +53,7 @@ class Home extends Component {
     }
 
     componentDidMount=()=>{
-        Axios.get(`${API_URL}/products?_expand=category`)
+        Axios.get(`${API_URL}/products?_expand=category&_limit=8`)
         .then((res)=>{
             console.log(res.data)
             this.setState({products:res.data})
@@ -79,7 +79,7 @@ class Home extends Component {
                         <MDBCarouselCaption>
                             <h2 style={{color:"white"}}>New style every week</h2>
                             <br/>
-                            <Button color="white" className="rounded-pill px-5 py-3" size="lg">Buy Now</Button>
+                            <Button color="white" className="rounded-pill px-5 py-3" size="lg">Shop Now</Button>
                         </MDBCarouselCaption>
                     </MDBCarouselItem>
                 </>                
@@ -104,10 +104,13 @@ class Home extends Component {
                 </MDBCarouselInner>
                 </MDBCarousel>                    
                 </div>
-                <br/><br/><br/><br/>
 
-                <div className="row" style={{paddingBottom:"20%"}}>                    
+                <div className="row" style={{paddingBottom:"5%"}}>                    
                     {this.renderProducts()}
+                </div>
+
+                <div className="d-flex justify-content-center">
+                    <Button className="btn-lg rounded-pill px-5" color="brown">See all collections</Button>
                 </div>
             </>
         )
