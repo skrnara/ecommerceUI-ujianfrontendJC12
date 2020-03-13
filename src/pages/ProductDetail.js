@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import Axios from 'axios';
 import { API_URL } from '../supports/ApiURL';
-import { Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
 import ChangeToRp from './../supports/ChangeToRp';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 
 const ProductDetail = (props) => {
     const [data, setData] = useState ({})
@@ -49,8 +50,55 @@ const ProductDetail = (props) => {
     }
     
     const sendToCart=()=>{
-        if(props.User.isLoggedin&&props.User.role=="user"){
-
+        console.log(props.User.isLoggedIn)
+        if(props.User.isLoggedIn&&props.User.role==="user"){
+            var objTransaction={
+                status:'oncart',
+                userId:props.User.id
+            }
+            Axios.get(`${API_URL}/transactions?status=oncart&userId=${props.User.id}`)
+            .then((res1)=>{
+                if(res1.data.length){
+                    var objTransactionDetails={
+                        trnsactionId:res1.data[0].id,
+                        productId:data.id,
+                        qty:qty
+                    }
+                    Axios.post(`${API_URL}/transactiondetails`, objTransactionDetails)
+                    .then((res3)=>{
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Barang Masuk ke Cart',
+                        })
+                    })
+                }
+                else{
+                    //klo belom ada data post dulu
+                    Axios.post(`${API_URL}/transactions`, objTransaction)
+                    .then((res2)=>{
+                        var objTransactionDetails={
+                            transactionId:res2.data.id,
+                            productId:data.id,
+                            qty:qty
+                        }
+                        Axios.post(`${API_URL}/transactiondetails`, objTransactionDetails)
+                        .then((res3)=>{
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Barang Masuk ke Cart',
+                            })
+                        })
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+                }
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
         }
         else{
             setModalOpen(true)
@@ -76,7 +124,7 @@ const ProductDetail = (props) => {
     if(data){
         return (
             <>    
-                <div className='paddingatas'>
+                <div style={{paddingTop:"200px"}}>                
                 <Modal centered toggle={()=>setModalOpen(false)} isOpen={modalOpen}>
                     <ModalBody>
                         {
@@ -87,7 +135,7 @@ const ProductDetail = (props) => {
                         }
                     </ModalBody>
                     <ModalFooter>
-                        <button className='btn btn-primary btn-sm' onClick={onToLoginClick}>OK</button>
+                        <Button color="brown" className="btn-sm rounded-pill" onClick={onToLoginClick}>OK</Button>
                     </ModalFooter>
                 </Modal>
                 <div className="row">
@@ -99,11 +147,11 @@ const ProductDetail = (props) => {
                     <div className="col-md-8 p-2">
                         <div className='border-headerdetail'>
                             <div className='font-weight-bolder font-nameprod'>
-                                {name}
+                                <h1>{name}</h1>
                             </div>
-                            <div className='font-typographysmall'>
+                            {/* <div className='font-typographysmall'>
                                 <span className='font-weight-bold'>{0}&nbsp;X</span> bought
-                            </div>
+                            </div> */}
                         </div>
                         <div className='border-headerdetail' style={{lineHeight:'80px'}}>
                             <div className="row">
@@ -131,7 +179,7 @@ const ProductDetail = (props) => {
                                    Quantity
                                 </div>
                                 <div className="col-md-11 d-flex py-2">
-                                    <button className='btn btn-primary btn-sm' disabled={qty<=1?true:false} onClick={()=>setqty(qty-1)}>-</button>
+                                    <Button className='btn-sm px-4 py-2 rounded-pill' color="brown" disabled={qty<=1?true:false} onClick={()=>setqty(qty-1)}>-</Button>
                                     <div className='rounded' style={{border:'1px black solid'}} >
                                         <input 
                                             type="text" 
@@ -140,12 +188,12 @@ const ProductDetail = (props) => {
                                             onChange={qtyOnchange}
                                         />
                                     </div>
-                                    <button className='btn btn-primary btn-sm' disabled={qty>=stock?true:false} onClick={()=>setqty(parseInt(qty)+1)}>+</button>
+                                    <Button className='btn-sm px-4 py-2 rounded-pill' color="brown" disabled={qty>=stock?true:false} onClick={()=>setqty(parseInt(qty)+1)}>+</Button>
                                 </div>
                             </div>
                         </div>
                         <div className=' border-headerdetail' style={{lineHeight:'80px'}}>
-                            <button className='btn btn-success rounded-pill' onClick={sendToCart}>Add to Cart</button>
+                            <Button className='btn rounded-pill' color="brown" onClick={sendToCart}>Add to Cart</Button>
                         </div>
                     </div>
                 </div>

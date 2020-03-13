@@ -3,9 +3,10 @@ import './App.css';
 import Header from './component/Header';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Register from './pages/Register';
 import NotFound from './pages/NotFound'
 import ManageAdmin from './pages/ManageAdmin';
-import PoductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
 import {Switch, Route} from 'react-router-dom';
 import Axios from 'axios'
 import { API_URL } from './supports/ApiURL';
@@ -53,8 +54,10 @@ function App({keepLogin}) {
       <Switch>
         <Route path='/' exact component={Home}/>
         <Route path='/login' exact component={Login}/>
+        <Route path='/register' exact component={Register}/>
         <Route path='/productdetail/:idprod' exact component={ProductDetail}/>
         <Route path='/manageadmin' exact component={ManageAdmin}/>
+        <Route path='/cart' exact component={Cart}/>
         <Route path='/*' exact component={NotFound}/>
       </Switch>
     </div>

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {MDBInput, MDBBtn, MDBAlert, MDBIcon} from 'mdbreact';
+import {MDBInput, MDBBtn, MDBAlert, MDBIcon, MDBLink} from 'mdbreact';
 import {connect} from 'react-redux';
 import {loginUser, errorMessageClear} from './../redux/actions';
 import {Redirect} from 'react-router-dom';
@@ -20,6 +20,7 @@ const Login = (props) => {
     }
 
     if(props.isLoggedIn){
+        console.log(props.isLoggedIn)
         return <Redirect to='/'/>
     }
 
@@ -40,7 +41,11 @@ const Login = (props) => {
                         :
                         null
                     }
-                    <MDBBtn type="submit" disabled={props.loading} color="light-blue">Login</MDBBtn>
+                    
+                    <div className="d-flex justify-content-">
+                    <p style={{textAlign:"center"}}>Not a member yet? <a href="/register" style={{color:"grey"}}>Register here.</a></p>
+                    </div>
+                    <MDBBtn type="submit" disabled={props.loading} color="black" className="rounded-pill">Login</MDBBtn>
                 </div>
             </form>
         </div>

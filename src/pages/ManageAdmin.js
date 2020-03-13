@@ -208,8 +208,8 @@ class ManageAdmin extends Component {
                                 <textarea cols="30" rows="10"  ref="descriptionEdit" className="form-control mt-2" placeholder="Description" defaultValue={products[indexedit].description}></textarea>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="primary" onClick={this.onSaveEditClick}>Save</Button>{' '}
-                                <Button color="secondary" onClick={this.toggleEdit}>Cancel</Button>
+                                <Button color="brown" className="btn-sm rounded-pill px-5 py-2" onClick={this.onSaveEditClick}>Save</Button>{' '}
+                                <Button color="red" className="btn-sm rounded-pill px-5 py-2" onClick={this.toggleEdit}>Cancel</Button>
                             </ModalFooter>
                         </Modal>
                         :
