@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { MDBBtn, MDBInput, MDBAlert, MDBIcon } from 'mdbreact';
 import Axios from 'axios';
-import { API_URL} from './../supports/ApiURL'
+import { API_URL} from './../supports/ApiURL';
+import { connect } from 'react-redux';
+import { errorMessageClear, registerUser} from './../redux/actions';
 
-const Register = () => {
+const Register = (props) => {
     const[registerData, setRegisterData]=useState({
         newUsername:'',
         newPassword:'',
@@ -16,13 +18,7 @@ const Register = () => {
 
     const onRegisterFormSubmit=(e)=>{
         e.preventDefault()
-        Axios.get(`${API_URL}/users`)
-        .then((res)=>{
-            console.log(res.data)
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
+        props.registerUser(registerData)
     }
 
     return (
@@ -35,7 +31,15 @@ const Register = () => {
                         <MDBInput onChange={dataOnChange} name='newPassword' value={registerData.newPassword} label="Type your password" icon="lock" group type="password" validate />
                         <MDBInput onChange={dataOnChange} name='newConfirmPassword' value={registerData.newConfirmPassword} label="Confirm your password" icon="lock" group type="password" validate />
                     </div>
-                    <div className="text-center">                        
+                    <div className="text-center"> 
+                        {
+                            props.registrationMessage?
+                            <MDBAlert color="danger">
+                            {props.registrationMessage}<MDBIcon onClick={()=>{props.errorMessageClear()}} className="float-right hoverErrorLogin mt-1" icon="times" /> 
+                            </MDBAlert>
+                            :
+                            null
+                        }                       
                         <MDBBtn type="submit" disabled="" color="black" className="rounded-pill">Submit</MDBBtn>
                     </div>
                 </form>
@@ -44,4 +48,8 @@ const Register = () => {
     )
 }
 
-export default Register;
+const MapStateToProps=(state)=>{
+    return state.Auth
+}
+
+export default connect (MapStateToProps, {registerUser, errorMessageClear})(Register);

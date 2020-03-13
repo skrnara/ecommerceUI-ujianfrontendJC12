@@ -1,7 +1,10 @@
 import {
     USER_LOGIN_START,
     USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAILED
+    USER_LOGIN_FAILED,
+    USER_REGISTER_START,
+    USER_REGISTER_FAILED,
+    USER_REGISTER_SUCCESS 
 } from './../actions/type';
 
 const INITIAL_STATE={
@@ -10,7 +13,9 @@ const INITIAL_STATE={
     loading:false,
     isLoggedIn:false,
     errorMessage:'',
-    role:''
+    role:'',
+    registrationMessage:''
+
 }
 
 export default (state=INITIAL_STATE, action)=>{
@@ -21,6 +26,16 @@ export default (state=INITIAL_STATE, action)=>{
             return {...state, loading:false,...action.payload,isLoggedIn:true}
         case USER_LOGIN_FAILED:
             return {...state, loading:false, errorMessage:action.payload}
+        
+        
+        case USER_REGISTER_START:
+            return {...state, loading:true}
+        case USER_REGISTER_FAILED:
+            return {...state, loading:false, registrationMessage:action.payload}
+        case USER_REGISTER_SUCCESS:
+            return {...state, loading:false, registrationMessage:action.payload}
+        
+        
         case 'ErrorClear':
             return INITIAL_STATE
         default:

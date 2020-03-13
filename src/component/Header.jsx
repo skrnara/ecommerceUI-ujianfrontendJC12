@@ -77,11 +77,7 @@ render() {
                 null
               }   
             </MDBNavItem>
-            <MDBNavItem>
-                <MDBNavLink to="/cart">
-                  <GiShoppingCart style={{fontSize:"24px", color:"black"}}/>
-                </MDBNavLink>                            
-            </MDBNavItem>
+            
             <MDBNavItem>
               {
                 this.props.User.isLoggedIn?
@@ -98,16 +94,23 @@ render() {
             <MDBNavItem>
               {
                 this.props.User.username?
-                <MDBDropdown>
-                    <MDBDropdownToggle nav caret>
-                      <span className="mr-2" style={{color:"black", fontWeight:"bolder"}}>{this.props.User.username}</span>
-                    </MDBDropdownToggle>
-                    <MDBDropdownMenu>
-                      <MDBDropdownItem href="/cart">Shopping Cart</MDBDropdownItem>
-                      <MDBDropdownItem href="#!">Manage Account</MDBDropdownItem>
-                      <MDBDropdownItem onClick={this.logoutUser}><a href="/" style={{textDecoration:"none", color:"black"}}>Logout</a></MDBDropdownItem>
-                    </MDBDropdownMenu>
-                </MDBDropdown>
+                  <>
+                  <MDBNavItem>
+                    <MDBNavLink to="/cart">
+                      <GiShoppingCart style={{fontSize:"24px", color:"black"}}/>
+                    </MDBNavLink>                            
+                  </MDBNavItem>
+                  <MDBDropdown>
+                      <MDBDropdownToggle nav caret>
+                        <span className="mr-2" style={{color:"black", fontWeight:"bolder"}}>{this.props.User.username}</span>
+                      </MDBDropdownToggle>
+                      <MDBDropdownMenu>
+                        <MDBDropdownItem href="/cart">Shopping Cart</MDBDropdownItem>
+                        <MDBDropdownItem href="#!">Manage Account</MDBDropdownItem>
+                        <MDBDropdownItem onClick={this.logoutUser}><a href="/" style={{textDecoration:"none", color:"black"}}>Logout</a></MDBDropdownItem>
+                      </MDBDropdownMenu>
+                  </MDBDropdown>
+                  </>
                 :
                 null
               }
