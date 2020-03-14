@@ -4,16 +4,16 @@ import Header from './component/Header';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Register from './pages/Register';
-import NotFound from './pages/NotFound'
+import NotFound from './pages/NotFound';
 import ManageAdmin from './pages/ManageAdmin';
 import Cart from './pages/Cart';
+import ProductDetail from './pages/ProductDetail';
+import AllProducts from './pages/AllProducts';
 import {Switch, Route} from 'react-router-dom';
 import Axios from 'axios'
 import { API_URL } from './supports/ApiURL';
 import { keepLogin } from './redux/actions';
 import {connect} from 'react-redux';
-import {Spinner} from 'reactstrap';
-import ProductDetail from './pages/ProductDetail';
 
 //tiap reload pasti ngelewatin app js. jd taro di tempat yg pasti kerender duluan.
 // ga bsa di index karena dia bukan komponen
@@ -44,7 +44,19 @@ function App({keepLogin}) {
 
   if(loading){
     return (
-      <Spinner animation="border" />
+      <>
+        <div className="d-flex justify-content-center flex-row" style={{marginTop:"150px", height:"450px"}}>
+            <div className="d-flex justify-content-center flex-column">
+                <div className="d-flex justify-content-center flex-row">
+                    <div className="spinner-grow" role="status"></div>
+                    <div className="spinner-grow" role="status"></div>
+                    <div className="spinner-grow" role="status"></div>
+                </div>
+                <br/><br/>
+                <div>We'll be with you in a moment.</div>
+            </div>
+        </div>            
+      </>
     )
   }
 
@@ -53,6 +65,7 @@ function App({keepLogin}) {
       <Header/>
       <Switch>
         <Route path='/' exact component={Home}/>
+        <Route path='/allproducts' exact component={AllProducts}/>
         <Route path='/login' exact component={Login}/>
         <Route path='/register' exact component={Register}/>
         <Route path='/productdetail/:idprod' exact component={ProductDetail}/>

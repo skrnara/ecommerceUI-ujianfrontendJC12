@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {MDBInput, MDBBtn, MDBAlert, MDBIcon, MDBLink} from 'mdbreact';
+import {MDBInput, MDBBtn, MDBAlert, MDBIcon } from 'mdbreact';
 import {connect} from 'react-redux';
 import {loginUser, errorMessageClear} from './../redux/actions';
 import {Redirect} from 'react-router-dom';

@@ -6,6 +6,7 @@ import ChangeToRp from './../supports/ChangeToRp';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
+import { cartCounter } from './../redux/actions'
 
 const ProductDetail = (props) => {
     const [data, setData] = useState ({})
@@ -20,11 +21,37 @@ const ProductDetail = (props) => {
         .then((res)=>{
             console.log(res.data)
             setData(res.data)
+
+            //make cart counter stay intact when reloaded
+            toCount()
+            
         })
         .catch((err)=>{
             console.log(err)
         })
     },[])
+
+    const toCount=()=>{
+        Axios.get(`${API_URL}/transactions?status=oncart&userId=${props.User.id}`)
+        .then((res1)=>{
+            if(res1.data.length){
+                Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${props.User.id}&status=oncart`)
+                .then((resoncart)=>{
+                    console.log(resoncart.data[0].transactiondetails.length)
+                    props.cartCounter(resoncart.data[0].transactiondetails.length)
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+            }
+            else{
+                props.cartCounter(0)
+            }
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    }
 
     const qtyOnchange=(e)=>{
         console.log(e.target.value)
@@ -50,7 +77,7 @@ const ProductDetail = (props) => {
     }
     
     const sendToCart=()=>{
-        console.log(props.User.isLoggedIn)
+        // console.log(props.User.isLoggedIn)
         if(props.User.isLoggedIn&&props.User.role==="user"){
             var objTransaction={
                 status:'oncart',
@@ -65,16 +92,19 @@ const ProductDetail = (props) => {
                         qty:qty
                     }
                     Axios.post(`${API_URL}/transactiondetails`, objTransactionDetails)
-                    .then((res3)=>{
+                    .then((res2)=>{
+
+                        toCount()
+
                         Swal.fire({
                             icon: 'success',
                             text: 'Item successfully added to cart',
-                            confirmButtonColor: '#000',
+                            confirmButtonColor: '#000'
                         })
                     })
                 }
                 else{
-                    //klo belom ada data post dulu
+                    //klo belom ada data transaksi dr particular user, post dulu wadah baru
                     Axios.post(`${API_URL}/transactions`, objTransaction)
                     .then((res2)=>{
                         var objTransactionDetails={
@@ -84,10 +114,13 @@ const ProductDetail = (props) => {
                         }
                         Axios.post(`${API_URL}/transactiondetails`, objTransactionDetails)
                         .then((res3)=>{
+                            
+                            toCount()
+
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Berhasil',
-                                text: 'Barang Masuk ke Cart',
+                                text: 'Item successfully added to cart',
+                                confirmButtonColor: '#000'
                             })
                         })
                     })
@@ -95,6 +128,9 @@ const ProductDetail = (props) => {
                         console.log(err)
                     })
                 }
+
+                //get res.dataarray 0 transaction details after done. trus add cartcounter
+
             })
             .catch((err)=>{
                 console.log(err)
@@ -210,4 +246,4 @@ const MapStateToProps=(state)=>{
     }
 }
 
-export default connect(MapStateToProps)(ProductDetail);
+export default connect(MapStateToProps, {cartCounter})(ProductDetail);

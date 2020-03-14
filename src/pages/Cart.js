@@ -4,6 +4,8 @@ import Axios from 'axios';
 import { API_URL } from '../supports/ApiURL';
 import { Table } from 'reactstrap';
 import Swal from 'sweetalert2';
+import { cartCounter } from './../redux/actions';
+import { Redirect } from 'react-router-dom';
 
 class Cart extends Component {
     state = { 
@@ -17,21 +19,24 @@ class Cart extends Component {
     getAllData=()=>{
         Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${this.props.User.id}&status=oncart`)
         .then((res)=>{
-            console.log(this.props.User.id)
-            console.log(res.data[0].transactiondetails)
+            // console.log(this.props.User.id)
+            // console.log(res.data[0].transactiondetails)
             var newArrForProducts=[]
             res.data[0].transactiondetails.forEach(element => {
                 newArrForProducts.push(Axios.get(`${API_URL}/products/${element.productId}`))
             });
-            console.log(newArrForProducts)
+
             Axios.all(newArrForProducts)
             .then((res2)=>{
                 res2.forEach((val, index)=>{
                     res.data[0].transactiondetails[index].productData=val.data
                 })
-                console.log(res.data[0].transactiondetails)
+                // console.log(res.data[0].transactiondetails)
                 this.setState({cartContent:res.data[0].transactiondetails})
-                console.log(this.state.cartContent)
+                
+                //cart counter
+                this.props.cartCounter(this.state.cartContent.length)  
+                
             })
 
         })
@@ -48,7 +53,7 @@ class Cart extends Component {
                 <tr key={index}>
                     <td>{index+1}</td>
                     <td>{val.productData.name}</td>
-                    <td><img src={val.productData.image} width="200px"/></td>
+                    <td><img src={val.productData.image} width="200px" alt="product"/></td>
                     <td>{val.qty}</td>
                     <td><button className="btn-sm btn-danger rounded-pill" onClick={()=>{this.deleteFromCart(index, val.id)}}>Delete</button></td>
                 </tr>
@@ -88,27 +93,40 @@ class Cart extends Component {
     }
 
     render() { 
-        return ( 
-            <>
-                <div style={{marginTop:"150px"}}>
-                    <h1>Your Cart</h1>
-                    <Table striped>
-                        <thead>
-                            <tr>
-                            <th>No.</th>
-                            <th>Name</th>
-                            <th>Picture</th>
-                            <th>Qty</th>
-                            <th>Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.renderCartContentData()}
-                        </tbody>
-                    </Table>
-                </div>
-            </>
-        );
+        if(this.props.User.isLoggedIn&&this.props.User.role==="user"){
+            return ( 
+                <>
+                {
+                    this.state.cartContent==0?
+                    <div style={{marginTop:"150px", textAlign:"center"}}>
+                        <h1>Your cart is empty</h1>
+                    </div>
+                    :
+                    <div style={{marginTop:"150px", textAlign:"center"}}>
+                        <h1>Your Cart</h1>                    
+                        <Table striped>
+                            <thead>
+                                <tr>
+                                <th>No.</th>
+                                <th>Name</th>
+                                <th>Picture</th>
+                                <th>Qty</th>
+                                <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.renderCartContentData()}
+                            </tbody>
+                        </Table>
+                    </div>
+                }
+                </>
+            );
+        }
+        else{
+            return <Redirect to="/notfound"/>
+        }
+        
     }
 }
 
@@ -118,4 +136,4 @@ const MapStateToProps=(state)=>{
     }
 }
  
-export default connect (MapStateToProps) (Cart);
+export default connect (MapStateToProps, {cartCounter}) (Cart);

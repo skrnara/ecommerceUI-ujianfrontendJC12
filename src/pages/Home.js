@@ -1,17 +1,14 @@
 import React, {Component} from 'react';
 import Axios from 'axios'
 import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
-import { MDBCarousel, MDBCarouselCaption, MDBCarouselInner, MDBCarouselItem, MDBView, MDBMask, MDBBtn } from
-"mdbreact";
-import {
-    Card, CardImg, CardText, CardBody,
-    CardTitle, CardSubtitle, Button, CardImgOverlay
-  } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { MDBCarousel, MDBCarouselCaption, MDBCarouselInner, MDBCarouselItem, MDBView, MDBMask, MDBLink } from "mdbreact";
+import { Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, Button } from 'reactstrap';
 import { API_URL } from './../supports/ApiURL';
 import Numeral from 'numeral';
-import {FaCartPlus} from 'react-icons/fa';
+import { FaCartPlus } from 'react-icons/fa';
 import Fade from 'react-reveal/Fade';
+import { cartCounter } from './../redux/actions';
 
 class Home extends Component {
     state = { 
@@ -21,7 +18,8 @@ class Home extends Component {
             "./images/ui_img3.jpg"
         ],
 
-        products:[]
+        products:[],
+        redirectToAllProductBool:false
     }
 
     renderProducts=()=>{
@@ -57,6 +55,16 @@ class Home extends Component {
         .then((res)=>{
             console.log(res.data)
             this.setState({products:res.data})
+            Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${this.props.User.id}&status=oncart`)
+            .then((resoncart)=>{
+                if(this.props.User.isLoggedIn){
+                    // console.log(resoncart.data[0].transactiondetails.length)
+                    this.props.cartCounter(resoncart.data[0].transactiondetails.length)
+                }
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
         })
         .catch((err)=>{
             console.log(err)
@@ -77,9 +85,10 @@ class Home extends Component {
                             <MDBMask overlay="black-light" />
                         </MDBView>
                         <MDBCarouselCaption>
-                            <h2 style={{color:"white"}}>New style every week</h2>
-                            <br/>
-                            <Button color="white" className="rounded-pill px-5 py-3" size="lg">Shop Now</Button>
+                            <h2 style={{color:"white"}}>Preloved designer items</h2>
+                            <MDBLink to="/allproducts">
+                                <Button color="white" className="rounded-pill px-5 py-3" size="lg">Shop Now</Button>
+                            </MDBLink>                                
                         </MDBCarouselCaption>
                     </MDBCarouselItem>
                 </>                
@@ -110,7 +119,9 @@ class Home extends Component {
                 </div>
 
                 <div className="d-flex justify-content-center">
+                <MDBLink to="/allproducts">
                     <Button className="btn-lg rounded-pill px-5" color="brown">See all collections</Button>
+                </MDBLink>
                 </div>
             </>
         )
@@ -126,7 +137,7 @@ class Home extends Component {
 
 const MapStateToProps=(state)=>{
     return{
-        isLoggedIn:state.Auth.isLoggedIn
+        User:state.Auth,
     }
 }
-export default connect(MapStateToProps)(Home);
+export default connect(MapStateToProps, {cartCounter})(Home);

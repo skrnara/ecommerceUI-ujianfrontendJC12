@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import {Table, Button, Modal, ModalBody, ModalFooter, ModalHeader, Row, Col} from 'reactstrap'
+import {Table, Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import Axios from 'axios';
 import { API_URL } from './../supports/ApiURL'
 import Swal from 'sweetalert2';
 import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom'
-// import withReactContent from 'sweetalert2-react-content';
-// const MySwal= withReactContent(Swal)
+import {Redirect} from 'react-router-dom';
+import ChangeToRp from './../supports/ChangeToRp';
 
 class ManageAdmin extends Component {
     state = {
@@ -72,16 +71,15 @@ class ManageAdmin extends Component {
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#000',
+            cancelButtonColor: '#999',
+            confirmButtonText: 'Confirm!'
           }).then((result) => {
             if (result.value) {
                 Axios.delete(`${API_URL}/products/${id}`)
                 .then((res)=>{
                     Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
+                    'Product has been deleted.',
                     'success'
                   ).then((result)=>{
                       if(result.value){
@@ -108,7 +106,7 @@ class ManageAdmin extends Component {
                     <td><img src={val.image} alt={val.name} width="200px"/></td>
                     <td>{val.stock}</td>
                     <td>{val.category.name}</td>
-                    <td>Rp.{val.price},-</td>
+                    <td>{ChangeToRp(val.price)}</td>
                     <td>{val.description}</td>
                     <td><Button color="brown" className="btn-sm rounded-pill  px-3" onClick={()=>{this.onEditClick(index)}}>Edit</Button><Button className="btn-sm rounded-pill  px-3" color="brown" onClick={()=>{this.adminDeleteProductConfirmation(index, val.id)}}>Delete</Button></td>
                 </tr>
@@ -167,7 +165,7 @@ class ManageAdmin extends Component {
                     {console.log(this.props.User.role)}
                     {/* //MODAL ADD */}
                     <Modal isOpen={this.state.isModalAddOpen} toggle={this.toggleAdd}>
-                        <ModalHeader toggle={this.toggleAdd}>Adding New Product Data</ModalHeader>
+                        <ModalHeader toggle={this.toggleAdd} style={{backgroundColor:"#795548"}}><div style={{color:"white"}}>Adding New Product Data</div></ModalHeader>
                         <ModalBody>
                             <input type="text" ref="nameAdd" placeholder='Product name' className="form-control mt-2"/>
                             <input type="text" ref="imageAdd" placeholder='Url image' className="form-control mt-2"/>
@@ -180,8 +178,8 @@ class ManageAdmin extends Component {
                             <textarea cols="30" rows="10"  ref="descriptionAdd" className="form-control mt-2" placeholder="Description"></textarea>
                         </ModalBody>
                         <ModalFooter>
-                        <Button color="primary" onClick={this.onSubmitNewProductData}>Add Data</Button>{' '}
-                        <Button color="secondary" onClick={this.toggleAdd}>Cancel</Button>
+                        <Button color="brown" className="btn-sm rounded-pill" onClick={this.onSubmitNewProductData}>Add Data</Button>{' '}
+                        <Button color="grey" className="btn-sm rounded-pill" onClick={this.toggleAdd}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
 
@@ -190,10 +188,10 @@ class ManageAdmin extends Component {
                     {
                         this.state.products.length?
                         <Modal isOpen={this.state.isModalEditOpen} toggle={this.toggleEdit}>
+                            <ModalHeader toggle={this.toggleEdit} style={{backgroundColor:"#795548"}}><div style={{color:"white"}}>Edit {products[indexedit].name}?</div></ModalHeader>
                             <div className="d-flex justify-content-center">
-                                <img src={products[indexedit].image} alt="" width="40%"/>
+                                <img src={products[indexedit].image} alt="edit image" width="40%" style={{padding:"5%"}}/>
                             </div>
-                            <ModalHeader toggle={this.toggleEdit}>Edit Data?</ModalHeader>
                             <ModalBody>                                
                                 {console.log(this.state.products.length)}
                                 {console.log(indexedit)}
@@ -209,7 +207,7 @@ class ManageAdmin extends Component {
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="brown" className="btn-sm rounded-pill px-5 py-2" onClick={this.onSaveEditClick}>Save</Button>{' '}
-                                <Button color="red" className="btn-sm rounded-pill px-5 py-2" onClick={this.toggleEdit}>Cancel</Button>
+                                <Button color="grey" className="btn-sm rounded-pill px-5 py-2" onClick={this.toggleEdit}>Cancel</Button>
                             </ModalFooter>
                         </Modal>
                         :

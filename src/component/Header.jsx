@@ -1,46 +1,45 @@
 import React, { Component } from "react";
 import {
-MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavbarToggler, MDBCollapse, 
+MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavbarToggler, MDBCollapse, MDBIcon,
 MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBNavLink, MDBFormInline, MDBBtn
 } from "mdbreact";
-import { NavLink } from 'reactstrap'
-import {connect} from 'react-redux';
-import {GoSearch} from 'react-icons/go';
+import { Badge } from 'reactstrap'
+import { connect } from 'react-redux';
+import { GoSearch } from 'react-icons/go';
 import Axios from "axios";
 import { API_URL } from './../supports/ApiURL';
-import { nonHome } from "../redux/actions";
 import { GiShoppingCart } from 'react-icons/gi'
 
 class Header extends Component {
-state = {
-  isOpen: false,
-  searchQuery:'',
-  toDisplayAfterSearch:[]
-};
+  state = {
+    isOpen: false,
+    searchQuery:'',
+    toDisplayAfterSearch:[]
+  };
 
-onClickSearch=(e)=>{
-  e.preventDefault()
-  var searchKeyword=this.state.inputSearchBar
+  onClickSearch=(e)=>{
+    e.preventDefault()
+    var searchKeyword=this.state.inputSearchBar
 
-  Axios.get(`${API_URL}/products?q=${searchKeyword}`)
-  .then((res)=>{
-    this.setState({toDisplayAfterSearch:res.data})
-    
-  })
-  .catch((err)=>{
-    console.log(err)
-  })
+    Axios.get(`${API_URL}/products?q=${searchKeyword}`)
+    .then((res)=>{
+      this.setState({toDisplayAfterSearch:res.data})
+      
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
 
-}
+  }
 
 
-toggleCollapse = () => {
-  this.setState({ isOpen: !this.state.isOpen });
-}
+  toggleCollapse = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+  }
 
-logoutUser=()=>{
-  localStorage.clear()
-}
+  logoutUser=()=>{
+    localStorage.clear()
+  }
 
 render() {
   return (
@@ -59,44 +58,48 @@ render() {
                 </MDBBtn>
               </MDBFormInline>
             </MDBNavItem>
-
-            <MDBNavItem>
-                <div></div>
-            </MDBNavItem>
-            <MDBNavItem>
-                <div></div>              
-            </MDBNavItem>
           </MDBNavbarNav>
           <MDBNavbarNav right>
             
-            <MDBNavItem active>
-              {
-                this.props.User.role==="admin"?
-                <MDBNavLink to='/manageadmin' style={{color:"black", fontWeight:"bolder"}}>Manage Admin</MDBNavLink>
-                :
-                null
-              }   
-            </MDBNavItem>
+            
             
             <MDBNavItem>
               {
                 this.props.User.isLoggedIn?
-                <div className="d-flex justify-content-center" style={{marginLeft:"-200px"}}>
+                <div className="d-flex justify-content-center" style={{marginLeft:"-300px"}}>
                   <MDBNavItem>
-                    <MDBNavLink to="/cart">
-                      <GiShoppingCart style={{fontSize:"24px", color:"black"}}/>
-                    </MDBNavLink>                            
+                  {
+                    this.props.User.role==="admin"?
+                    <MDBNavLink to='/manageadmin' style={{color:"black", fontWeight:"bolder"}}>Manage Products</MDBNavLink>
+                    :
+                    null
+                  }   
                   </MDBNavItem>
                   <MDBDropdown>
-                      <MDBDropdownToggle nav caret>
-                        <span className="mr-2" style={{color:"black", fontWeight:"bolder"}}>{this.props.User.username}</span>
+                      <MDBDropdownToggle nav>
+                        <span className="mr-2" style={{color:"black", fontWeight:"bolder"}}>{this.props.User.username}<MDBIcon far icon="user-circle" /></span>
                       </MDBDropdownToggle>
                       <MDBDropdownMenu>
-                        <MDBDropdownItem href="/cart">Shopping Cart</MDBDropdownItem>
                         <MDBDropdownItem href="#!">Manage Account</MDBDropdownItem>
                         <MDBDropdownItem onClick={this.logoutUser}><a href="/" style={{textDecoration:"none", color:"black"}}>Logout</a></MDBDropdownItem>
                       </MDBDropdownMenu>
                   </MDBDropdown>
+                    
+                    {
+                      this.props.User.role==="admin"?
+                      null
+                      :
+                      <>
+                        <MDBNavItem>
+                        <MDBNavLink to="/cart">
+                          <GiShoppingCart style={{fontSize:"24px", color:"black"}}/>
+                        </MDBNavLink>        
+                        </MDBNavItem>
+                            <MDBNavItem>
+                              <Badge href="/cart" color="dark" className="rounded-pill px-2 py-1">{this.props.CartCount.cartNumber}</Badge>
+                            </MDBNavItem>
+                      </>
+                    }
                 </div>
 
                 :              
@@ -119,7 +122,8 @@ render() {
 const MapStateToProps=(state)=>{
   return {
     User:state.Auth,
-    Header:state.Header
+    Header:state.Header,
+    CartCount:state.CartCount
   } 
 }
 
