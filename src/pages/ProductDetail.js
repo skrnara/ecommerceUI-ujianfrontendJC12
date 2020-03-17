@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import Axios from 'axios';
 import { API_URL } from '../supports/ApiURL';
-import { Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, Button, Table } from 'reactstrap';
 import ChangeToRp from './../supports/ChangeToRp';
 import { Redirect } from 'react-router-dom';
+import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
+import { cartCounter } from './../redux/actions';
 import Swal from 'sweetalert2';
-import { cartCounter } from './../redux/actions'
+import withReactContent from 'sweetalert2-react-content';
+const MySwal = withReactContent(Swal)
 
 const ProductDetail = (props) => {
     const [data, setData] = useState ({})
@@ -214,68 +217,55 @@ const ProductDetail = (props) => {
                         <Button color="brown" className="btn-sm rounded-pill" onClick={onToLoginClick}>OK</Button>
                     </ModalFooter>
                 </Modal>
-                <div className="row">
-                    <div className="col-md-4 p-2">
-                        <div className="product-detail">
+                
+                <Container>
+                    <Row className="col-md-12">
+                        <Col className="col-md-4 p-2">
                             <img src={image} alt={name} width='100%' className='rounded'/>
-                        </div>
-                    </div>
-                    <div className="col-md-8 p-2">
-                        <div className='border-headerdetail'>
-                            <div className='font-weight-bolder font-nameprod'>
-                                <h1>{name}</h1>
-                            </div>
-                            {/* <div className='font-typographysmall'>
-                                <span className='font-weight-bold'>{0}&nbsp;X</span> bought
-                            </div> */}
-                        </div>
-                        <div className='border-headerdetail' style={{lineHeight:'80px'}}>
-                            <div className="row">
-                                <div className="col-md-1 font-typographymed">
-                                   Stock
-                                </div>
-                                <div className="col-md-11">
-                                    {stock} pcs
-                                </div>
-                            </div>
-                        </div>
-                        <div className=' border-headerdetail' style={{lineHeight:'80px'}}>
-                            <div className="row" style={{verticalAlign:'center'}}>
-                                <div className="col-md-1 font-typographymed" >
-                                   Price
-                                </div>
-                                <div className="col-md-11 font-harga">
-                                    {ChangeToRp(price*qty)}
-                                </div>                               
-                            </div>
-                        </div>
-                        <div className=' border-headerdetail' >
-                            <div className="row" >
-                                <div className="col-md-1 font-typographymed py-3">
-                                   Quantity
-                                </div>
-                                <div className="col-md-11 d-flex py-2">
-                                    <Button className='btn-sm px-4 py-2 rounded-pill' color="brown" disabled={qty<=1?true:false} onClick={()=>setqty(qty-1)}>-</Button>
-                                    <div className='rounded' style={{border:'1px black solid'}} >
-                                        <input 
-                                            type="text" 
-                                            style={{width:'100px',height:'60px',textAlign:'center',backgroundColor:'transparent',border:'0px'}} 
-                                            value={qty} 
-                                            onChange={qtyOnchange}
-                                        />
-                                    </div>
-                                    <Button className='btn-sm px-4 py-2 rounded-pill' color="brown" disabled={qty>=stock?true:false} onClick={()=>setqty(parseInt(qty)+1)}>+</Button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className=' border-headerdetail' style={{lineHeight:'80px'}}>
-                            <Button className='btn rounded-pill' color="brown" onClick={sendToCart}>Add to Cart</Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </>
-    
+                        </Col>
+                        <Col className="col-md-8 p-2">
+                            <Row className="p-3">
+                                <h2>{name}</h2>
+                            </Row>
+
+                            <Table responsive>
+                                <tr>
+                                    <td>{description}</td>
+                                </tr>
+                                <tr>
+                                    <td>Stock {stock} pcs</td>
+                                </tr>
+                                <tr>
+                                    <td>Price {ChangeToRp(price*qty)} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Quantity 
+                                        <br/><br/>
+                                        <Row>
+                                            <br/>
+                                            <Button className='btn-sm px-3 py-2 rounded-pill' color="brown" disabled={qty<=1?true:false} onClick={()=>setqty(qty-1)}>-</Button>
+                                                <div className='rounded' style={{border:'1px black solid'}} >
+                                                    <input 
+                                                        type="text" 
+                                                        style={{width:'40px',height:'40px',textAlign:'center',backgroundColor:'transparent',border:'0px'}} 
+                                                        value={qty} 
+                                                        onChange={qtyOnchange}
+                                                    />
+                                                </div>
+                                            <Button className='btn-sm px-3 py-2 rounded-pill' color="brown" disabled={qty>=stock?true:false} onClick={()=>setqty(parseInt(qty)+1)}>+</Button>
+                                        </Row>
+                                    </td>
+                                </tr>
+                            </Table>
+                            <Row>
+                                <Button className='btn rounded-pill' color="brown" onClick={sendToCart}>Add to Cart</Button>                            
+                            </Row>                               
+                        </Col>
+                    </Row>
+                </Container>  
+                </div> 
+            </> 
         )
     }
 }

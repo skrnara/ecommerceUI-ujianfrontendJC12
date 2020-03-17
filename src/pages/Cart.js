@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import { API_URL } from '../supports/ApiURL';
-import { Table, Button } from 'reactstrap';
+import { Table, Button, Container, Col, Row } from 'reactstrap';
 import { MDBIcon } from 'mdbreact';
 import Swal from 'sweetalert2';
 import { cartCounter } from './../redux/actions';
@@ -52,7 +52,7 @@ class Cart extends Component {
                 <tr key={index}>
                     <td>{index+1}</td>
                     <td>{val.productData.name}</td>
-                    <td><img src={val.productData.image} width="200px" alt="product"/></td>
+                    <td><img src={val.productData.image} width="150px" alt="product"/></td>
                     <td><Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="minus"/></Button>{val.qty}<Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="plus" /></Button></td>
                     <td><Button className="btn-sm btn-danger rounded-pill px-3 py-2" color="red" onClick={()=>{this.deleteFromCart(index, val.id)}}><MDBIcon icon="times" style={{color:"white"}}/></Button></td>
                 </tr>
@@ -101,21 +101,29 @@ class Cart extends Component {
                     </div>
                     :
                     <div style={{marginTop:"150px", textAlign:"center"}}>
-                        <h1>Your Cart</h1>                    
-                        <Table striped>
-                            <thead>
-                                <tr>
-                                <th>No.</th>
-                                <th>Name</th>
-                                <th>Picture</th>
-                                <th>Qty</th>
-                                <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderCartContentData()}
-                            </tbody>
-                        </Table>
+                        <h1>Your Cart</h1>  
+                        <br/>   
+                        <Container>
+                            <Row>
+                                <Col>
+                                <Table responsive className="col-md-8">
+                                    <thead>
+                                        <tr>
+                                        <th>No.</th>
+                                        <th>Name</th>
+                                        <th>Picture</th>
+                                        <th>Qty</th>
+                                        <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.renderCartContentData()}
+                                    </tbody>
+                                </Table>
+                                </Col>
+                            </Row>
+                        </Container>               
+                        
                     </div>
                 }
                 </>
