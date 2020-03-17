@@ -4,7 +4,10 @@ import {
     USER_LOGIN_FAILED,
     USER_REGISTER_START,
     USER_REGISTER_FAILED,
-    USER_REGISTER_SUCCESS 
+    USER_REGISTER_SUCCESS,
+    CHANGE_PASSWORD_START,
+    CHANGE_PASSWORD_FAILED,
+    CHANGE_PASSWORD_SUCCESS 
 } from './../actions/type';
 
 const INITIAL_STATE={
@@ -15,7 +18,11 @@ const INITIAL_STATE={
     errorMessage:'',
     role:'',
     registrationMessage:'',
-    successRegistrationMessage:''
+    successRegistrationMessage:'',
+
+    changePasswordMessage:'',
+    //successChangePasswordMessage:''
+    //userIdToChangePass
 
 }
 
@@ -35,6 +42,15 @@ export default (state=INITIAL_STATE, action)=>{
             return {...state, loading:false, registrationMessage:action.payload}
         case USER_REGISTER_SUCCESS:
             return {...state, loading:false, successRegistrationMessage:action.payload}
+        
+
+        case CHANGE_PASSWORD_START:
+            return {...state, loading:true}
+        case CHANGE_PASSWORD_FAILED:
+            return {...state, loading:false, changePasswordMessage:action.payload}
+        case CHANGE_PASSWORD_SUCCESS:
+            return {...state, loading:false, changePasswordMessage:action.payload}
+            
         
         
         case 'ErrorClear':

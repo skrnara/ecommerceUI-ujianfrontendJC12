@@ -4,19 +4,20 @@ import Header from './component/Header';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Register from './pages/Register';
+import ChangePassword from './pages/ChangePassword';
 import NotFound from './pages/NotFound';
 import ManageAdmin from './pages/ManageAdmin';
 import Cart from './pages/Cart';
 import ProductDetail from './pages/ProductDetail';
 import AllProducts from './pages/AllProducts';
-import {Switch, Route} from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import Axios from 'axios'
 import { API_URL } from './supports/ApiURL';
 import { keepLogin } from './redux/actions';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 //tiap reload pasti ngelewatin app js. jd taro di tempat yg pasti kerender duluan.
-// ga bsa di index karena dia bukan komponen
+//ga bsa di index karena dia bukan komponen
 
 function App({keepLogin}) {
   //Loading State
@@ -68,6 +69,7 @@ function App({keepLogin}) {
         <Route path='/allproducts' exact component={AllProducts}/>
         <Route path='/login' exact component={Login}/>
         <Route path='/register' exact component={Register}/>
+        <Route path='/changepassword' exact component={ChangePassword}/>
         <Route path='/productdetail/:idprod' exact component={ProductDetail}/>
         <Route path='/manageadmin' exact component={ManageAdmin}/>
         <Route path='/cart' exact component={Cart}/>

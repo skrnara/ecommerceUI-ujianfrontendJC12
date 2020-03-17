@@ -5,7 +5,7 @@ import {
     USER_LOGIN_SUCCESS,
     USER_REGISTER_START,
     USER_REGISTER_FAILED,
-    USER_REGISTER_SUCCESS 
+    USER_REGISTER_SUCCESS
 } from "./type"
 import { API_URL } from '../../supports/ApiURL'
 
@@ -14,7 +14,7 @@ export const loginUser=({username, password})=>{
     return (dispatch)=>{
         dispatch({type:USER_LOGIN_START})
         if(username===''||password===''){
-            dispatch({type:USER_LOGIN_FAILED, payload:`fill all blanks pls`})
+            dispatch({type:USER_LOGIN_FAILED, payload:`please fill all input`})
         }
         else{            
             //cara query===
@@ -45,7 +45,7 @@ export const registerUser=({newUsername, newPassword, newConfirmPassword})=>{
     return(dispatch)=>{
         dispatch({type:USER_REGISTER_START})
         if(newUsername===''||newPassword===''||newConfirmPassword===''){
-            dispatch({type:USER_REGISTER_FAILED, payload: `pls fill all input correctly`})
+           dispatch({type:USER_REGISTER_FAILED, payload: `pls fill all input correctly`})
         }
         else if(newPassword!==newConfirmPassword){
             dispatch({type:USER_REGISTER_FAILED, payload: `Cannot confirm password. Please type new password correctly`})
@@ -56,7 +56,7 @@ export const registerUser=({newUsername, newPassword, newConfirmPassword})=>{
                 console.log(res.data)
                 if(res.data.length>0){
                     dispatch({type:USER_REGISTER_FAILED, payload: `username already exist`})
-                    console.log('blyat')
+                    
                 }
                 else{
                     dispatch({type:USER_REGISTER_SUCCESS, payload: `registration successful`})
@@ -71,6 +71,8 @@ export const registerUser=({newUsername, newPassword, newConfirmPassword})=>{
         }
     }
 }
+
+
 
 export const errorMessageClear=()=>{
     return {

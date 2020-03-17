@@ -14,12 +14,12 @@ const ProductDetail = (props) => {
     const [modalOpen, setModalOpen]= useState(false)
     const [redirectToLogin, setRedirectToLogin]= useState(false)
 
-    console.log(props.match.params.idprod)
+    // console.log(props.match.params.idprod)
 
     useEffect(() => {
         Axios.get(`${API_URL}/products/${props.match.params.idprod}`)
         .then((res)=>{
-            console.log(res.data)
+            // console.log(res.data)
             setData(res.data)
 
             //make cart counter stay intact when reloaded
@@ -37,7 +37,7 @@ const ProductDetail = (props) => {
             if(res1.data.length){
                 Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${props.User.id}&status=oncart`)
                 .then((resoncart)=>{
-                    console.log(resoncart.data[0].transactiondetails.length)
+                    // console.log(resoncart.data[0].transactiondetails.length)
                     props.cartCounter(resoncart.data[0].transactiondetails.length)
                 })
                 .catch((err)=>{
@@ -54,7 +54,7 @@ const ProductDetail = (props) => {
     }
 
     const qtyOnchange=(e)=>{
-        console.log(e.target.value)
+        // console.log(e.target.value)
         if(e.target.value===''){
             setqty(0)
         }
@@ -79,32 +79,72 @@ const ProductDetail = (props) => {
     const sendToCart=()=>{
         // console.log(props.User.isLoggedIn)
         if(props.User.isLoggedIn&&props.User.role==="user"){
-            var objTransaction={
-                status:'oncart',
-                userId:props.User.id
-            }
+            
             Axios.get(`${API_URL}/transactions?status=oncart&userId=${props.User.id}`)
             .then((res1)=>{
+                //udah ada data transaksi dr particular user, post di wadah yg udah ada
                 if(res1.data.length){
+
                     var objTransactionDetails={
                         transactionId:res1.data[0].id,
                         productId:data.id,
                         qty:qty
                     }
-                    Axios.post(`${API_URL}/transactiondetails`, objTransactionDetails)
-                    .then((res2)=>{
 
-                        toCount()
+                    //get data transactiondetails di sini, cocokin sama product id, klo udh ada
+                    //jangan post, tapi put. 
+                    //get qty lama, add qty baru
 
-                        Swal.fire({
-                            icon: 'success',
-                            text: 'Item successfully added to cart',
-                            confirmButtonColor: '#000'
-                        })
+                    Axios.get(`${API_URL}/transactiondetails?transactionId=${objTransactionDetails.transactionId}&productId=${objTransactionDetails.productId}`)
+                    .then((restocheckproduct)=>{
+                        if(restocheckproduct.data.length){
+                            console.log(restocheckproduct.data[0].qty)
+                            
+                            Axios.patch(`${API_URL}/transactiondetails/${restocheckproduct.data[0].id}`, {qty:restocheckproduct.data[0].qty+qty})
+                            .then((resafterput)=>{
+                                Axios.get(`${API_URL}/transactiondetails/${restocheckproduct.data[0].id}`)
+                                .then((resafterput2)=>{
+                                    console.log(resafterput2.data)
+                                    Swal.fire({
+                                        icon: 'success',
+                                        text: 'Item successfully added to cart',
+                                        confirmButtonColor: '#000'
+                                    })
+                                })
+                                .catch((err)=>{
+                                    console.log(err)
+                                })
+                            })
+                            .catch((err)=>{
+                                console.log(err)
+                            })
+                        }
+                        else{
+                            Axios.post(`${API_URL}/transactiondetails`, objTransactionDetails)
+                            .then((res2)=>{
+                            
+                                toCount()
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    text: 'Item successfully added to cart',
+                                    confirmButtonColor: '#000'
+                                })
+                            })
+                        }
                     })
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+
+                    
                 }
                 else{
                     //klo belom ada data transaksi dr particular user, post dulu wadah baru
+                    var objTransaction={
+                        status:'oncart',
+                        userId:props.User.id
+                    }
                     Axios.post(`${API_URL}/transactions`, objTransaction)
                     .then((res2)=>{
                         var objTransactionDetails={

@@ -85,7 +85,7 @@ class Home extends Component {
                             <MDBMask overlay="black-light" />
                         </MDBView>
                         <MDBCarouselCaption>
-                            <h2 style={{color:"white"}}>Preloved designer items</h2>
+                            <h2 style={{color:"white"}}>New style every week</h2>
                             <MDBLink to="/allproducts">
                                 <Button color="white" className="rounded-pill px-5 py-3" size="lg">Shop Now</Button>
                             </MDBLink>                                

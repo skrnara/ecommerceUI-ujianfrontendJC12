@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Axios from 'axios'
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
-import { MDBCarousel, MDBCarouselCaption, MDBCarouselInner, MDBCarouselItem, MDBView, MDBMask } from "mdbreact";
 import { Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, Button } from 'reactstrap';
 import { API_URL } from './../supports/ApiURL';
 import Numeral from 'numeral';

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import { API_URL } from '../supports/ApiURL';
-import { Table } from 'reactstrap';
+import { Table, Button } from 'reactstrap';
+import { MDBIcon } from 'mdbreact';
 import Swal from 'sweetalert2';
 import { cartCounter } from './../redux/actions';
 import { Redirect } from 'react-router-dom';
@@ -24,8 +25,8 @@ class Cart extends Component {
             var newArrForProducts=[]
             res.data[0].transactiondetails.forEach(element => {
                 newArrForProducts.push(Axios.get(`${API_URL}/products/${element.productId}`))
-            });
-
+            });           
+            
             Axios.all(newArrForProducts)
             .then((res2)=>{
                 res2.forEach((val, index)=>{
@@ -44,9 +45,7 @@ class Cart extends Component {
             console.log(err)
         })
     }
-
-    
-
+  
     renderCartContentData=()=>{
         return this.state.cartContent.map((val, index)=>{
             return (
@@ -54,13 +53,12 @@ class Cart extends Component {
                     <td>{index+1}</td>
                     <td>{val.productData.name}</td>
                     <td><img src={val.productData.image} width="200px" alt="product"/></td>
-                    <td>{val.qty}</td>
-                    <td><button className="btn-sm btn-danger rounded-pill" onClick={()=>{this.deleteFromCart(index, val.id)}}>Delete</button></td>
+                    <td><Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="minus"/></Button>{val.qty}<Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="plus" /></Button></td>
+                    <td><Button className="btn-sm btn-danger rounded-pill px-3 py-2" color="red" onClick={()=>{this.deleteFromCart(index, val.id)}}><MDBIcon icon="times" style={{color:"white"}}/></Button></td>
                 </tr>
             )
         })
     }
-    
 
     deleteFromCart=(index, id)=>{
         Swal.fire({
@@ -97,7 +95,7 @@ class Cart extends Component {
             return ( 
                 <>
                 {
-                    this.state.cartContent==0?
+                    this.state.cartContent===0?
                     <div style={{marginTop:"150px", textAlign:"center"}}>
                         <h1>Your cart is empty</h1>
                     </div>
