@@ -49,8 +49,8 @@ class AllProducts extends Component {
             Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${this.props.User.id}&status=oncart`)
             .then((resoncart)=>{
                 if(this.props.User.isLoggedIn){
-                    // console.log(resoncart.data[0].transactiondetails.length)
-                    this.props.cartCounter(resoncart.data[0].transactiondetails.length)
+                    var totalQtyOnCart=resoncart.data[0].transactiondetails.reduce((a, b)=>({qty:a.qty+b.qty})).qty
+                    this.props.cartCounter(totalQtyOnCart)
                 }
             })
             .catch((err)=>{

@@ -15,6 +15,7 @@ class Cart extends Component {
     
     componentDidMount(){
         this.getAllData()
+        
     }
 
     getAllData=()=>{
@@ -34,9 +35,11 @@ class Cart extends Component {
                 })
                 // console.log(res.data[0].transactiondetails)
                 this.setState({cartContent:res.data[0].transactiondetails})
-                
-                //cart counter
-                this.props.cartCounter(this.state.cartContent.length)  
+
+                //cart counter 
+                var totalQtyOnCart=this.state.cartContent.reduce((a, b)=>({qty:a.qty+b.qty})).qty
+                this.props.cartCounter(totalQtyOnCart)      
+                console.log(this.state.cartContent[0].productData)         
                 
             })
 
@@ -45,15 +48,50 @@ class Cart extends Component {
             console.log(err)
         })
     }
-  
+
+    // qtyCartOnchange=(e)=>{
+    //     // console.log(e.target.value)
+    //     if(e.target.value===''){
+    //         setqty(0)
+    //     }
+    //     if(Number(e.target.value)){
+    //         if(qty===0){
+    //             setqty(e.target.value[1])
+    //         }
+    //         else{
+    //             if(e.target.value>stock){
+    //                 setqty(stock)
+    //             }
+    //             else if(e.target.value<1){
+    //                 setqty(1)
+    //             }
+    //             else{
+    //                 setqty(e.target.value)
+    //             }
+    //         }
+    //     }
+    // }
+
     renderCartContentData=()=>{
         return this.state.cartContent.map((val, index)=>{
             return (
                 <tr key={index}>
                     <td>{index+1}</td>
                     <td>{val.productData.name}</td>
-                    <td><img src={val.productData.image} width="150px" alt="product"/></td>
-                    <td><Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="minus"/></Button>{val.qty}<Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="plus" /></Button></td>
+                    <td><img src={val.productData.image} width="100px" alt="product"/></td>
+                    <td>
+                        <Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="minus"/></Button>
+                        <input 
+                        type="text" 
+                        style={{width:'20px',height:'40px',textAlign:'center',backgroundColor:'transparent',border:'0px'}} 
+                        value={val.qty}
+                        onChange={this.qtyCartOnchange}
+                        />
+                        <Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="plus" /></Button>
+                        <br/><br/>
+                        <p style={{color:"dimgrey"}}>{val.qty} x {val.productData.price}</p>
+                        <h5>{val.qty*val.productData.price}</h5>
+                    </td>
                     <td><Button className="btn-sm btn-danger rounded-pill px-3 py-2" color="red" onClick={()=>{this.deleteFromCart(index, val.id)}}><MDBIcon icon="times" style={{color:"white"}}/></Button></td>
                 </tr>
             )
@@ -102,11 +140,11 @@ class Cart extends Component {
                     :
                     <div style={{marginTop:"150px", textAlign:"center"}}>
                         <h1>Your Cart</h1>  
-                        <br/>   
+                        <br/><br/>
                         <Container>
                             <Row>
-                                <Col>
-                                <Table responsive className="col-md-8">
+                                <Col className="col-md-8">
+                                <Table responsive style={{border:"solid 2px #dedede"}}>
                                     <thead>
                                         <tr>
                                         <th>No.</th>
@@ -120,6 +158,19 @@ class Cart extends Component {
                                         {this.renderCartContentData()}
                                     </tbody>
                                 </Table>
+                                </Col>
+                                <Col className="col-12 col-md-4">
+                                    <div style={{backgroundColor:"#a89485", borderRadius:"5px"}}>
+                                        <h3 style={{borderBottom:"1px solid white", color:"white"}} className="p-4">Total Purchase:</h3>
+                                        <h6 style={{color:"white"}}>
+                                            number items
+                                            <br/>
+                                            <br/>
+                                            Total purchase:
+                                        </h6>
+                                        <h3 style={{color:"white"}}>number</h3>
+                                    </div>    
+                                    <Button className="btn-lg rounded-pill px-5" color="brown">Checkout</Button>                           
                                 </Col>
                             </Row>
                         </Container>               

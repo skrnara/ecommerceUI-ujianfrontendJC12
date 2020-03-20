@@ -62,7 +62,7 @@ const Register = (props) => {
                                     <ModalBody className="d-flex justify-content-center flex-column">
                                         <div style={{textAlign:"center"}}>
                                             <h3>Registration Successful</h3>
-                                            <p>Now you can now login to our website</p>
+                                            <p>You can now login to our website</p>
                                         </div>
                                     </ModalBody>   
                                     <ModalFooter>

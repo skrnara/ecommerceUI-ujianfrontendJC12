@@ -40,8 +40,8 @@ const ProductDetail = (props) => {
             if(res1.data.length){
                 Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${props.User.id}&status=oncart`)
                 .then((resoncart)=>{
-                    // console.log(resoncart.data[0].transactiondetails.length)
-                    props.cartCounter(resoncart.data[0].transactiondetails.length)
+                    var totalQtyOnCart=resoncart.data[0].transactiondetails.reduce((a, b)=>({qty:a.qty+b.qty})).qty
+                    props.cartCounter(totalQtyOnCart)
                 })
                 .catch((err)=>{
                     console.log(err)
@@ -101,18 +101,43 @@ const ProductDetail = (props) => {
                     Axios.get(`${API_URL}/transactiondetails?transactionId=${objTransactionDetails.transactionId}&productId=${objTransactionDetails.productId}`)
                     .then((restocheckproduct)=>{
                         if(restocheckproduct.data.length){
-                            console.log(restocheckproduct.data[0].qty)
+                            // console.log(restocheckproduct.data[0].qty)
                             
                             Axios.patch(`${API_URL}/transactiondetails/${restocheckproduct.data[0].id}`, {qty:restocheckproduct.data[0].qty+qty})
                             .then((resafterput)=>{
                                 Axios.get(`${API_URL}/transactiondetails/${restocheckproduct.data[0].id}`)
                                 .then((resafterput2)=>{
-                                    console.log(resafterput2.data)
-                                    Swal.fire({
-                                        icon: 'success',
-                                        text: 'Item successfully added to cart',
-                                        confirmButtonColor: '#000'
-                                    })
+                                    if(stock<=resafterput2.data.qty){
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            text: `The stock for this product is only ${stock}. 
+                                                    You try to add ${resafterput2.data.qty} to your cart. 
+                                                    The quantity will automatically changed to ${stock}`,
+                                            confirmButtonColor: '#000'
+                                        })
+
+                                        Axios.patch(`${API_URL}/transactiondetails/${restocheckproduct.data[0].id}`, {qty:stock})
+                                        .then((resstockoverload)=>{
+                                            Axios.get(`${API_URL}/transactiondetails/${restocheckproduct.data[0].id}`)
+                                            .then((resafterstockfixed)=>{
+                                                console.log(resafterstockfixed.data)
+                                            })
+                                            .catch((err)=>{
+                                                console.log(err)
+                                            })
+                                        })
+                                        .catch((err)=>{
+                                            console.log(err)
+                                        })
+                                    }
+                                    else{
+                                        Swal.fire({
+                                            icon: 'success',
+                                            text: 'Item successfully added to cart',
+                                            confirmButtonColor: '#000'
+                                        })
+                                    }
+                                    
                                 })
                                 .catch((err)=>{
                                     console.log(err)

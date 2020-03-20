@@ -45,7 +45,7 @@ export const registerUser=({newUsername, newPassword, newConfirmPassword})=>{
     return(dispatch)=>{
         dispatch({type:USER_REGISTER_START})
         if(newUsername===''||newPassword===''||newConfirmPassword===''){
-           dispatch({type:USER_REGISTER_FAILED, payload: `pls fill all input correctly`})
+           dispatch({type:USER_REGISTER_FAILED, payload: `Please fill all input correctly`})
         }
         else if(newPassword!==newConfirmPassword){
             dispatch({type:USER_REGISTER_FAILED, payload: `Cannot confirm password. Please type new password correctly`})
@@ -55,11 +55,11 @@ export const registerUser=({newUsername, newPassword, newConfirmPassword})=>{
             .then((res)=>{
                 console.log(res.data)
                 if(res.data.length>0){
-                    dispatch({type:USER_REGISTER_FAILED, payload: `username already exist`})
+                    dispatch({type:USER_REGISTER_FAILED, payload: `Username already exist`})
                     
                 }
                 else{
-                    dispatch({type:USER_REGISTER_SUCCESS, payload: `registration successful`})
+                    dispatch({type:USER_REGISTER_SUCCESS, payload: `Registration successful`})
                     Axios.post(`${API_URL}/users`, {username:newUsername, password:newPassword, role:"user"})
                 }
             })
