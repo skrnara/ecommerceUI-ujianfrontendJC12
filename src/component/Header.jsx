@@ -8,13 +8,14 @@ import { connect } from 'react-redux';
 import { GoSearch } from 'react-icons/go';
 import Axios from "axios";
 import { API_URL } from './../supports/ApiURL';
-import { GiShoppingCart } from 'react-icons/gi'
+import { GiShoppingCart } from 'react-icons/gi';
 
 class Header extends Component {
   state = {
     isOpen: false,
     searchQuery:'',
-    toDisplayAfterSearch:[]
+    toDisplayAfterSearch:[],
+    logoutYes:false
   };
 
   onClickSearch=(e)=>{
@@ -29,9 +30,7 @@ class Header extends Component {
     .catch((err)=>{
       console.log(err)
     })
-
   }
-
 
   toggleCollapse = () => {
     this.setState({ isOpen: !this.state.isOpen });
@@ -81,7 +80,7 @@ render() {
                       </MDBDropdownToggle>
                       <MDBDropdownMenu>
                         <MDBDropdownItem href="#!">Manage Account</MDBDropdownItem>
-                        <MDBDropdownItem onClick={this.logoutUser}><a href="/" style={{textDecoration:"none", color:"black"}}>Logout</a></MDBDropdownItem>
+                        <MDBDropdownItem onClick={this.logoutUser}><a href="/" style={{textDecoration:"none", color:"black", textAlign:"left"}}>Logout</a></MDBDropdownItem>
                       </MDBDropdownMenu>
                   </MDBDropdown>
                     
@@ -104,7 +103,7 @@ render() {
 
                 :              
                   
-                <MDBNavLink to="/login" style={{color:"black"}}>
+                <MDBNavLink to="/login" style={{color:"black", marginLeft:"-100px"}}>
                   Login
                 </MDBNavLink>
                 

@@ -8,8 +8,6 @@ import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import { cartCounter } from './../redux/actions';
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-const MySwal = withReactContent(Swal)
 
 const ProductDetail = (props) => {
     const [data, setData] = useState ({})
@@ -40,8 +38,13 @@ const ProductDetail = (props) => {
             if(res1.data.length){
                 Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${props.User.id}&status=oncart`)
                 .then((resoncart)=>{
-                    var totalQtyOnCart=resoncart.data[0].transactiondetails.reduce((a, b)=>({qty:a.qty+b.qty})).qty
-                    props.cartCounter(totalQtyOnCart)
+                    if(resoncart.data[0].transactiondetails.length>0){
+                        var totalQtyOnCart=resoncart.data[0].transactiondetails.reduce((a, b)=>({qty:a.qty+b.qty})).qty
+                        props.cartCounter(totalQtyOnCart)
+                    }
+                    else{
+                        props.cartCounter(0)
+                    }
                 })
                 .catch((err)=>{
                     console.log(err)
@@ -95,7 +98,7 @@ const ProductDetail = (props) => {
                     }
 
                     //get data transactiondetails di sini, cocokin sama product id, klo udh ada
-                    //jangan post, tapi put. 
+                    //jangan post, tapi patch. 
                     //get qty lama, add qty baru
 
                     Axios.get(`${API_URL}/transactiondetails?transactionId=${objTransactionDetails.transactionId}&productId=${objTransactionDetails.productId}`)
@@ -120,7 +123,8 @@ const ProductDetail = (props) => {
                                         .then((resstockoverload)=>{
                                             Axios.get(`${API_URL}/transactiondetails/${restocheckproduct.data[0].id}`)
                                             .then((resafterstockfixed)=>{
-                                                console.log(resafterstockfixed.data)
+                                                // console.log(resafterstockfixed.data)
+                                                toCount()
                                             })
                                             .catch((err)=>{
                                                 console.log(err)
@@ -136,6 +140,8 @@ const ProductDetail = (props) => {
                                             text: 'Item successfully added to cart',
                                             confirmButtonColor: '#000'
                                         })
+
+                                        toCount()
                                     }
                                     
                                 })
@@ -149,15 +155,15 @@ const ProductDetail = (props) => {
                         }
                         else{
                             Axios.post(`${API_URL}/transactiondetails`, objTransactionDetails)
-                            .then((res2)=>{
-                            
-                                toCount()
-
+                            .then((res2)=>{                           
+                                
                                 Swal.fire({
                                     icon: 'success',
                                     text: 'Item successfully added to cart',
                                     confirmButtonColor: '#000'
                                 })
+                                
+                                toCount()
                             })
                         }
                     })
@@ -196,9 +202,6 @@ const ProductDetail = (props) => {
                         console.log(err)
                     })
                 }
-
-                //get res.dataarray 0 transaction details after done. trus add cartcounter
-
             })
             .catch((err)=>{
                 console.log(err)

@@ -3,9 +3,9 @@ import Axios from 'axios'
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, Button } from 'reactstrap';
+import { MDBIcon } from 'mdbreact';
 import { API_URL } from './../supports/ApiURL';
 import Numeral from 'numeral';
-import { FaCartPlus } from 'react-icons/fa';
 import Fade from 'react-reveal/Fade';
 import { cartCounter } from './../redux/actions';
 
@@ -24,14 +24,14 @@ class AllProducts extends Component {
                             <CardImg top width="100%" height="100%" src={val.image} alt="Card image cap" />
                             <div className="blackBox d-flex justify-content-center">
                                 <Link to={`/productdetail/${val.id}`} className="insideButton">
-                                    <button className="buyNowButton px-5 py-2 btn-sm" style={{marginTop:"140%"}}><div style={{color:"white"}}><FaCartPlus/></div></button>
+                                    <button className="buyNowButton px-5 py-2 btn-sm" style={{marginTop:"140%"}}><div style={{color:"white"}}><MDBIcon icon="cart-plus"/></div></button>
                                 </Link>
                             </div>
                             <CardBody>
                             <CardTitle>{ val.name }</CardTitle>
                             <CardText>{ val.description }</CardText>
                             <CardSubtitle>{ `Rp.`+ Numeral(val.price).format(0,0)}</CardSubtitle>
-                            <Button className="rounded-pill btn-sm" color="brown"><a href={`/productdetail/${val.id}`} style={{color:"white"}}>View Products</a></Button>
+                            <Button className="rounded-pill btn-sm" color="brown"><a href={`/productdetail/${val.id}`} style={{color:"white"}}>View Product</a></Button>
                             </CardBody>
                         </Card>
                     </div>

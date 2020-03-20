@@ -30,7 +30,7 @@ function App({keepLogin}) {
     if(id){
       Axios.get(`${API_URL}/users/${id}`)
       .then(res=>{
-        console.log(res.data)
+        // console.log(res.data)
         keepLogin(res.data)
       }).catch((err)=>{
         console.log(err)

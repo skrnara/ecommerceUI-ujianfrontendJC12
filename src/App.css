@@ -166,3 +166,16 @@ body {
 }
 
 /* 404 page */
+
+
+/* cart total float */
+.floating-cart-total{
+  position:fixed
+}
+
+@media only screen and (max-width:760px){
+  .floating-cart-total{
+    position:static
+  }
+}
+/* cart total float */

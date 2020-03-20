@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import { API_URL } from '../supports/ApiURL';
+import ChangeToRp from './../supports/ChangeToRp';
 import { Table, Button, Container, Col, Row } from 'reactstrap';
 import { MDBIcon } from 'mdbreact';
 import Swal from 'sweetalert2';
@@ -11,11 +12,6 @@ import { Redirect } from 'react-router-dom';
 class Cart extends Component {
     state = { 
         cartContent:[]
-    }
-    
-    componentDidMount(){
-        this.getAllData()
-        
     }
 
     getAllData=()=>{
@@ -37,10 +33,15 @@ class Cart extends Component {
                 this.setState({cartContent:res.data[0].transactiondetails})
 
                 //cart counter 
-                var totalQtyOnCart=this.state.cartContent.reduce((a, b)=>({qty:a.qty+b.qty})).qty
-                this.props.cartCounter(totalQtyOnCart)      
-                console.log(this.state.cartContent[0].productData)         
-                
+                console.log(this.state.cartContent.length)
+                if(this.state.cartContent.length>0){
+                    var totalQtyOnCart=this.state.cartContent.reduce((a, b)=>({qty:a.qty+b.qty})).qty
+                    this.props.cartCounter(totalQtyOnCart)      
+                    console.log(this.state.cartContent[0].productData)  
+                }
+                else{
+                    this.props.cartCounter(0)
+                }                
             })
 
         })
@@ -48,29 +49,16 @@ class Cart extends Component {
             console.log(err)
         })
     }
+    
+    componentDidMount(){
+        this.getAllData()   
+    }
 
-    // qtyCartOnchange=(e)=>{
-    //     // console.log(e.target.value)
-    //     if(e.target.value===''){
-    //         setqty(0)
-    //     }
-    //     if(Number(e.target.value)){
-    //         if(qty===0){
-    //             setqty(e.target.value[1])
-    //         }
-    //         else{
-    //             if(e.target.value>stock){
-    //                 setqty(stock)
-    //             }
-    //             else if(e.target.value<1){
-    //                 setqty(1)
-    //             }
-    //             else{
-    //                 setqty(e.target.value)
-    //             }
-    //         }
-    //     }
-    // }
+    
+
+    qtyCartOnchange=(e)=>{
+        // console.log(e.target.value)        
+    }
 
     renderCartContentData=()=>{
         return this.state.cartContent.map((val, index)=>{
@@ -89,14 +77,37 @@ class Cart extends Component {
                         />
                         <Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="plus" /></Button>
                         <br/><br/>
-                        <p style={{color:"dimgrey"}}>{val.qty} x {val.productData.price}</p>
-                        <h5>{val.qty*val.productData.price}</h5>
+                        <p style={{color:"dimgrey"}}>{val.qty} x {ChangeToRp(val.productData.price)}</p>
+                        <h5>{ChangeToRp(val.qty*val.productData.price)}</h5>
                     </td>
                     <td><Button className="btn-sm btn-danger rounded-pill px-3 py-2" color="red" onClick={()=>{this.deleteFromCart(index, val.id)}}><MDBIcon icon="times" style={{color:"white"}}/></Button></td>
                 </tr>
             )
         })
     }
+
+    countItemQuantityInCart=()=>{
+        if(this.state.cartContent.length){
+           var quantityOfAllItems=this.state.cartContent.reduce((a, b)=>({qty:a.qty+b.qty})).qty
+           return quantityOfAllItems
+        }
+        else{}
+    }
+
+    sumAllInCart=()=>{
+        if(this.state.cartContent.length){
+            // console.log(this.state.cartContent[1].productData.price)
+            // console.log(this.state.cartContent[1].qty)
+            var sum=0
+            this.state.cartContent.map((val)=>{
+                return sum=sum+val.productData.price*val.qty
+            })
+
+            return ChangeToRp(sum) 
+        }
+        else{}
+    }
+
 
     deleteFromCart=(index, id)=>{
         Swal.fire({
@@ -133,7 +144,7 @@ class Cart extends Component {
             return ( 
                 <>
                 {
-                    this.state.cartContent===0?
+                    this.state.cartContent.length===0?
                     <div style={{marginTop:"150px", textAlign:"center"}}>
                         <h1>Your cart is empty</h1>
                     </div>
@@ -160,17 +171,20 @@ class Cart extends Component {
                                 </Table>
                                 </Col>
                                 <Col className="col-12 col-md-4">
-                                    <div style={{backgroundColor:"#a89485", borderRadius:"5px"}}>
-                                        <h3 style={{borderBottom:"1px solid white", color:"white"}} className="p-4">Total Purchase:</h3>
+                                    <div className="floating-cart-total">
+                                    <div style={{backgroundColor:"#a89485", borderRadius:"5px", paddingBottom:"20px"}}>
+                                        <h3 style={{borderBottom:"1px solid white", color:"white"}} className="p-4">Your Purchase:</h3>
                                         <h6 style={{color:"white"}}>
-                                            number items
+                                            {this.countItemQuantityInCart()} items
                                             <br/>
                                             <br/>
-                                            Total purchase:
+                                            Total Purchase:
                                         </h6>
-                                        <h3 style={{color:"white"}}>number</h3>
+                                        <h3 style={{color:"white"}}>{this.sumAllInCart()}</h3>
                                     </div>    
+                                    <br/>
                                     <Button className="btn-lg rounded-pill px-5" color="brown">Checkout</Button>                           
+                                    </div>
                                 </Col>
                             </Row>
                         </Container>               
