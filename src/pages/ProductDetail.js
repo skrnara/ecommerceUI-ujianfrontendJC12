@@ -236,9 +236,9 @@ const ProductDetail = (props) => {
                     <ModalBody>
                         {
                             props.User.role==='admin'?
-                            'maaf anda admin'
+                            `You are logging in as an admin, you can't make a purchase`
                             :
-                            'Maaf Anda harus login dahulu'
+                            `Sorry, you have to login first`
                         }
                     </ModalBody>
                     <ModalFooter>

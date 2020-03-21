@@ -11,7 +11,10 @@ import { Redirect } from 'react-router-dom';
 
 class Cart extends Component {
     state = { 
-        cartContent:[]
+        cartContent:[],
+        indexToIncrement:0,
+        indexToDecrement:0,
+        qtyToIncrement:0
     }
 
     getAllData=()=>{
@@ -33,11 +36,13 @@ class Cart extends Component {
                 this.setState({cartContent:res.data[0].transactiondetails})
 
                 //cart counter 
-                console.log(this.state.cartContent.length)
+                // console.log(this.state.cartContent.length)
                 if(this.state.cartContent.length>0){
                     var totalQtyOnCart=this.state.cartContent.reduce((a, b)=>({qty:a.qty+b.qty})).qty
                     this.props.cartCounter(totalQtyOnCart)      
-                    console.log(this.state.cartContent[0].productData)  
+                    // console.log(this.state.cartContent[0].productData)  
+                    // console.log(this.state.cartContent[0].transactionId)
+                    // console.log(this.state.cartContent[0].productId)
                 }
                 else{
                     this.props.cartCounter(0)
@@ -54,10 +59,38 @@ class Cart extends Component {
         this.getAllData()   
     }
 
-    
+    //increment
+    incrementQuantity=(transactionId, productId)=>{
+        Axios.get(`${API_URL}/transactiondetails?transactionId=${transactionId}&productId=${productId}`)
+        .then((resToIncrement)=>{             
+            Axios.patch(`${API_URL}/transactiondetails/${resToIncrement.data[0].id}`, {qty:resToIncrement.data[0].qty+1})
+            .then((rezz)=>{
+                this.getAllData()
+            })
+            .catch((err)=>{
+                console.log(err)
+            })        
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    }
 
-    qtyCartOnchange=(e)=>{
-        // console.log(e.target.value)        
+    //decrement
+    decrementQuantity=(transactionId, productId)=>{
+        Axios.get(`${API_URL}/transactiondetails?transactionId=${transactionId}&productId=${productId}`)
+        .then((resToIncrement)=>{             
+            Axios.patch(`${API_URL}/transactiondetails/${resToIncrement.data[0].id}`, {qty:resToIncrement.data[0].qty-1})
+            .then((rezz)=>{
+                this.getAllData()
+            })
+            .catch((err)=>{
+                console.log(err)
+            })        
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
     }
 
     renderCartContentData=()=>{
@@ -68,14 +101,13 @@ class Cart extends Component {
                     <td>{val.productData.name}</td>
                     <td><img src={val.productData.image} width="100px" alt="product"/></td>
                     <td>
-                        <Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="minus"/></Button>
+                        <Button onClick={()=>this.decrementQuantity(val.transactionId, val.productId)} disabled={val.qty<=1?true:false} className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="minus"/></Button>
                         <input 
                         type="text" 
                         style={{width:'20px',height:'40px',textAlign:'center',backgroundColor:'transparent',border:'0px'}} 
                         value={val.qty}
-                        onChange={this.qtyCartOnchange}
                         />
-                        <Button className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="plus" /></Button>
+                        <Button onClick={()=>this.incrementQuantity(val.transactionId, val.productId)} disabled={val.qty>=val.productData.stock?true:false} className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="plus" /></Button>
                         <br/><br/>
                         <p style={{color:"dimgrey"}}>{val.qty} x {ChangeToRp(val.productData.price)}</p>
                         <h5>{ChangeToRp(val.qty*val.productData.price)}</h5>
