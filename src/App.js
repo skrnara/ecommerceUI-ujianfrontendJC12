@@ -10,7 +10,8 @@ import ManageAdmin from './pages/ManageAdmin';
 import Cart from './pages/Cart';
 import ProductDetail from './pages/ProductDetail';
 import AllProducts from './pages/AllProducts';
-import { Switch, Route } from 'react-router-dom';
+import SearchProduct from './pages/SearchProduct';
+import { Switch, Route, Router } from 'react-router-dom';
 import Axios from 'axios'
 import { API_URL } from './supports/ApiURL';
 import { keepLogin } from './redux/actions';
@@ -73,10 +74,11 @@ function App({keepLogin}) {
         <Route path='/productdetail/:idprod' exact component={ProductDetail}/>
         <Route path='/manageadmin' exact component={ManageAdmin}/>
         <Route path='/cart' exact component={Cart}/>
+        <Route path='/searchproduct/:keyword' exact component={SearchProduct}/>
         <Route path='/*' exact component={NotFound}/>
       </Switch>
     </div>
-  );
+  )
 }
 
 export default connect(null, {keepLogin}) (App);

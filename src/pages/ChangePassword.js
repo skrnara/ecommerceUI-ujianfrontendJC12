@@ -3,15 +3,17 @@ import { MDBBtn, MDBInput, MDBAlert, MDBIcon } from 'mdbreact';
 import { connect } from 'react-redux';
 import { Modal, ModalBody, Button, ModalFooter } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
+import { changeUserPassword, errorMessageClear } from './../redux/actions'
 
 const ChangePassword = (props) => {
 
     const [changePasswordData, setChangePasswordData]=useState({
         oldPassword:'',
-        newPassword:'',
-        confirmNewPassword:''
+        newChangedPassword:'',
+        confirmNewChangedPassword:''
     })
 
+    const[moveToLogin, setMoveToLogin]=useState(false)
     const[modal, setModal]=useState(true)
     const toggle = () => setModal(!modal);
     const {className} = props;
@@ -20,44 +22,56 @@ const ChangePassword = (props) => {
         setChangePasswordData({...changePasswordData, [e.target.name]:e.target.value})
     }
 
-    //kirim payload id user
-    //di-put di action 
+    const ChangePasswordSubmit=(e)=>{
+        e.preventDefault()
+        console.log(props.id)
+        console.log(props.changePassMessage)
+        props.changeUserPassword(changePasswordData, props.id)
+    }
+    
+    const redirectChangePasswordToLogin=()=>{
+        localStorage.clear()
+        // setMoveToLogin(true)
+    }
 
+    if(!props.isLoggedIn){
+        return <Redirect to="/login"/>
+    }
     
-    
-    if(props.User.isLoggedIn){
+    if(props.isLoggedIn){
         return (
             <>
                 <div className="d-flex justify-content-center align-items-center" style={{paddingTop:"200px"}}>            
-                    <form style={{width:"35%"}}>
-                    <p className="h5 text-center mb-4">Change password for {props.User.username}</p>
+                    <form style={{width:"35%"}} onSubmit={ChangePasswordSubmit}>
+                    <p className="h5 text-center mb-4">Change password for {props.username}</p>
                         <div className="grey-text">
                             <MDBInput onChange={onChangePassword} name='oldPassword' value={changePasswordData.oldPassword} label="Type your old password" icon="lock" group type="text" validate error="wrong" success="right" />
                             <br/>
-                            <MDBInput onChange={onChangePassword} name='newPassword' value={changePasswordData.newPassword} label="Type your new password" group type="password" validate />
-                            <MDBInput onChange={onChangePassword} name='confirmNewPassword' value={changePasswordData.confirmNewPassword} label="Confirm your new password" group type="password" validate />
+                            <MDBInput onChange={onChangePassword} name='newChangedPassword' value={changePasswordData.newChangedPassword} label="Type your new password" group type="password" validate />
+                            <MDBInput onChange={onChangePassword} name='confirmNewChangedPassword' value={changePasswordData.confirmNewChangedPassword} label="Confirm your new password" group type="password" validate />
                         </div>
                         <div className="text-center"> 
                             {
-                                props.registrationMessage?
+                                props.changePassMessage?
                                 <MDBAlert color="danger">
-                                {props.registrationMessage}<MDBIcon className="float-right hoverErrorLogin mt-1" icon="times" /> 
+                                {props.changePassMessage}<MDBIcon className="float-right hoverErrorLogin mt-1" onClick={()=>{props.errorMessageClear()}} icon="times" /> 
                                 </MDBAlert>
                                 :
                                 null
                             }                       
                             {
-                                props.successRegistrationMessage?
+                                props.successChangePasswordMessage?
                                 <div>
                                     <Modal isOpen={modal} toggle={toggle} className={className}>
                                         <ModalBody className="d-flex justify-content-center flex-column">
                                             <div style={{textAlign:"center"}}>
                                                 <h3>Registration Successful</h3>
-                                                <p>Now you can now login to our website</p>
+                                                <p>{props.successChangePasswordMessage}</p>
                                             </div>
                                         </ModalBody>   
                                         <ModalFooter>
-                                            <Button className="btn-sm rounded-pill" color="black">Ok</Button>
+                                            {/* FIX HERE */}
+                                            <Button className="btn-sm rounded-pill" color="black" onClick={redirectChangePasswordToLogin}>Ok</Button>
                                         </ModalFooter>                        
                                     </Modal>
                                 </div>
@@ -79,9 +93,7 @@ const ChangePassword = (props) => {
 
 
 const MapStateToProps=(state)=>{
-    return{
-        User:state.Auth
-    }
+    return state.Auth
 }
  
-export default connect(MapStateToProps)(ChangePassword);
+export default connect(MapStateToProps, {errorMessageClear, changeUserPassword})(ChangePassword);

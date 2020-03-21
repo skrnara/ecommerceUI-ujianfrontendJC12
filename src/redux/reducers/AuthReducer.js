@@ -19,11 +19,8 @@ const INITIAL_STATE={
     role:'',
     registrationMessage:'',
     successRegistrationMessage:'',
-
-    changePasswordMessage:'',
-    //successChangePasswordMessage:''
-    //userIdToChangePass
-
+    changePassMessage:'',
+    successChangePasswordMessage:''
 }
 
 export default (state=INITIAL_STATE, action)=>{
@@ -47,9 +44,9 @@ export default (state=INITIAL_STATE, action)=>{
         case CHANGE_PASSWORD_START:
             return {...state, loading:true}
         case CHANGE_PASSWORD_FAILED:
-            return {...state, loading:false, changePasswordMessage:action.payload}
+            return {...state, loading:false, changePassMessage:action.payload}
         case CHANGE_PASSWORD_SUCCESS:
-            return {...state, loading:false, changePasswordMessage:action.payload}
+            return {...state, loading:false, successChangePasswordMessage:action.payload}
             
         
         

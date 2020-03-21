@@ -24,6 +24,7 @@ const Register = (props) => {
 
     const onRegisterFormSubmit=(e)=>{
         e.preventDefault()
+        console.log(props.registrationMessage)
         props.registerUser(registerData)
     }
 
