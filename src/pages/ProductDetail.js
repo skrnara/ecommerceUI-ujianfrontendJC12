@@ -231,7 +231,7 @@ const ProductDetail = (props) => {
     if(data){
         return (
             <>    
-                <div style={{paddingTop:"200px"}}>                
+                <div style={{paddingTop:"150px"}}>                
                 <Modal centered toggle={()=>setModalOpen(false)} isOpen={modalOpen}>
                     <ModalBody>
                         {
@@ -251,7 +251,7 @@ const ProductDetail = (props) => {
                         <Col className="col-md-4 p-2">
                             <img src={image} alt={name} width='100%' className='rounded'/>
                         </Col>
-                        <Col className="col-md-8 p-2">
+                        <Col className="col-md-8 col-12 p-2">
                             <Row className="p-3">
                                 <h2>{name}</h2>
                             </Row>

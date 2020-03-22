@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
 MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavbarToggler, MDBCollapse, MDBIcon,
-MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBNavLink, MDBFormInline, MDBBtn
+MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBNavLink
 } from "mdbreact";
 import { Badge, Modal, ModalBody, ModalHeader, ModalFooter, Button } from 'reactstrap';
 import { connect } from 'react-redux';
@@ -17,32 +17,7 @@ class Header extends Component {
     isOpen: false,
     redirect: null,
     modalSearch:false
-  };
-
-  componentDidMount=()=>{
-    Axios.get(`${API_URL}/products?_expand=category&_limit=8`)
-    .then((res)=>{
-        // console.log(res.data)
-        this.setState({products:res.data})
-        if(this.props.User.role==="user"){
-            Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${this.props.User.id}&status=oncart`)
-            .then((resoncart)=>{
-                if(this.props.User.isLoggedIn&&resoncart.data[0].transactiondetails.length>0){
-                    var totalQtyOnCart=resoncart.data[0].transactiondetails.reduce((a, b)=>({qty:a.qty+b.qty})).qty
-                    this.props.cartCounter(totalQtyOnCart)
-                }
-            })
-            .catch((err)=>{
-                console.log(err)
-            })
-        }        
-    })
-    .catch((err)=>{
-        console.log(err)
-    })
   }
-
-  
 
   toggleCollapse = () => {
     this.setState({ isOpen: !this.state.isOpen });
@@ -83,7 +58,7 @@ class Header extends Component {
 
 
 
-      <MDBNavbar light color="white"  expand="md" position="fixed" fixed="top" style={{height:"150px"}}>
+      <MDBNavbar light color="white"  expand="md" position="fixed" fixed="top" style={{height:"120px"}} className="shadow-sm p-3 mb-5 bg-white rounded">
         <MDBNavbarBrand href="/">
           <h2 style={{letterSpacing:"8px", textTransform:"uppercase", color:"black", fontWeight:"bolder"}}>Minimalés</h2>
         </MDBNavbarBrand>
@@ -105,21 +80,22 @@ class Header extends Component {
               {
                 this.props.User.isLoggedIn?
                 <div className="d-flex justify-content-center" style={{marginLeft:"-300px"}}>
-                  <MDBNavItem>
-                  {
-                    this.props.User.role==="admin"?
-                    <MDBNavLink to='/manageadmin' style={{color:"black", fontWeight:"bolder"}}>Manage Products</MDBNavLink>
-                    :
-                    null
-                  }   
-                  </MDBNavItem>
                   <MDBDropdown>
                       <MDBDropdownToggle nav>
                         <span className="mr-2" style={{color:"black", fontWeight:"bolder"}}>{this.props.User.username}<MDBIcon far icon="user-circle" /></span>
                       </MDBDropdownToggle>
                       <MDBDropdownMenu>
-                        <MDBDropdownItem href="#!">Manage Account</MDBDropdownItem>
-                        <MDBDropdownItem onClick={this.logoutUser}><a href="/" style={{textDecoration:"none", color:"black", textAlign:"left"}}>Logout</a></MDBDropdownItem>
+                      {
+                        this.props.User.role==="user"?
+                        <MDBDropdownItem href="/transactionstatus">Transaction Status</MDBDropdownItem>
+                        :
+                        <>
+                        <MDBDropdownItem href="/">Manage Transaction</MDBDropdownItem>
+                        <MDBDropdownItem href="/manageadmin">Manage Products</MDBDropdownItem>
+                        </>
+                      }
+                        <MDBDropdownItem href="/changepassword">Change Password</MDBDropdownItem>
+                        <MDBDropdownItem href="/" onClick={this.logoutUser}>Logout</MDBDropdownItem>
                       </MDBDropdownMenu>
                   </MDBDropdown>
                     

@@ -102,7 +102,7 @@ class Home extends Component {
 
         return ( 
             <>
-                <div style={{marginTop:"150px"}}>                        
+                <div style={{marginTop:"120px"}}>                        
                 <MDBCarousel
                 activeItem={1}
                 length={this.state.images.length}

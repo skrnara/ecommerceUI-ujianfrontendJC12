@@ -111,6 +111,12 @@ export const changeUserPassword=({oldPassword, newChangedPassword, confirmNewCha
 }
 
 
+export const changePassMessageClear=()=>{
+    return{
+        type:'ChangePassMessageClear'
+    }
+}
+
 export const errorMessageClear=()=>{
     return {
         type:'ErrorClear'

@@ -66,7 +66,7 @@ class AllProducts extends Component {
     render() { 
         return (
             <>
-                <div style={{marginTop:"150px"}}> 
+                <div style={{marginTop:"120px"}}> 
                     <div className="row" style={{paddingBottom:"5%"}}>                      
                         {this.renderProducts()}
                     </div>

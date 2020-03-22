@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Axios from 'axios';
 import { API_URL } from '../supports/ApiURL';
 import ChangeToRp from './../supports/ChangeToRp';
-import { Table, Button, Container, Col, Row } from 'reactstrap';
+import { Table, Button, Container, Col, Row, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { MDBIcon } from 'mdbreact';
 import Swal from 'sweetalert2';
 import { cartCounter } from './../redux/actions';
@@ -12,23 +12,21 @@ import { Redirect } from 'react-router-dom';
 class Cart extends Component {
     state = { 
         cartContent:[],
-        indexToIncrement:0,
-        indexToDecrement:0,
-        qtyToIncrement:0
+        reloadCart:false
     }
 
     getAllData=()=>{
         Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${this.props.User.id}&status=oncart`)
         .then((res)=>{
-            // console.log(this.props.User.id)
-            // console.log(res.data[0].transactiondetails)
             var newArrForProducts=[]
+            // console.log(res.data[0].transactiondetails)
             res.data[0].transactiondetails.forEach(element => {
                 newArrForProducts.push(Axios.get(`${API_URL}/products/${element.productId}`))
-            });           
+            })          
             
             Axios.all(newArrForProducts)
             .then((res2)=>{
+                // console.log(res2)
                 res2.forEach((val, index)=>{
                     res.data[0].transactiondetails[index].productData=val.data
                 })
@@ -36,13 +34,9 @@ class Cart extends Component {
                 this.setState({cartContent:res.data[0].transactiondetails})
 
                 //cart counter 
-                // console.log(this.state.cartContent.length)
                 if(this.state.cartContent.length>0){
                     var totalQtyOnCart=this.state.cartContent.reduce((a, b)=>({qty:a.qty+b.qty})).qty
                     this.props.cartCounter(totalQtyOnCart)      
-                    // console.log(this.state.cartContent[0].productData)  
-                    // console.log(this.state.cartContent[0].transactionId)
-                    // console.log(this.state.cartContent[0].productId)
                 }
                 else{
                     this.props.cartCounter(0)
@@ -97,9 +91,8 @@ class Cart extends Component {
         return this.state.cartContent.map((val, index)=>{
             return (
                 <tr key={index}>
-                    <td>{index+1}</td>
-                    <td>{val.productData.name}</td>
                     <td><img src={val.productData.image} width="100px" alt="product"/></td>
+                    <td>{val.productData.name}</td>
                     <td>
                         <Button onClick={()=>this.decrementQuantity(val.transactionId, val.productId)} disabled={val.qty<=1?true:false} className="btn-sm rounded-pill px-3 py-2" color="brown"><MDBIcon style={{color:"white"}} icon="minus"/></Button>
                         <input 
@@ -140,7 +133,6 @@ class Cart extends Component {
         else{}
     }
 
-
     deleteFromCart=(index, id)=>{
         Swal.fire({
             title: `Are you sure you want to delete ${this.state.cartContent[index].productData.name}?`,
@@ -171,13 +163,32 @@ class Cart extends Component {
           })
     }
 
+    //checkoutbutton
+    checkoutCart=()=>{
+        Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${this.props.User.id}&status=oncart`)
+        .then((res)=>{
+            console.log(res.data[0].id)
+            Axios.patch(`${API_URL}/transactions/${res.data[0].id}`, {status:'waiting payment'})
+            .then((res2)=>{
+               this.getAllData()
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+
+    }
+
     render() { 
         if(this.props.User.isLoggedIn&&this.props.User.role==="user"){
             return ( 
                 <>
                 {
                     this.state.cartContent.length===0?
-                    <div style={{marginTop:"150px", textAlign:"center"}}>
+                    <div style={{marginTop:"150px", textAlign:"center", height:"200px"}}>
                         <h1>Your cart is empty</h1>
                     </div>
                     :
@@ -187,14 +198,12 @@ class Cart extends Component {
                         <Container>
                             <Row>
                                 <Col className="col-md-8">
-                                <Table responsive style={{border:"solid 2px #dedede"}}>
-                                    <thead>
+                                <Table responsive className="shadow p-3 mb-5 bg-white rounded">
+                                    <thead style={{backgroundColor:"#a89485"}}>
                                         <tr>
-                                        <th>No.</th>
-                                        <th>Name</th>
-                                        <th>Picture</th>
-                                        <th>Qty</th>
-                                        <th>Delete</th>
+                                        <th style={{color:"white"}} colSpan="2">Product</th>
+                                        <th style={{color:"white"}}>Qty</th>
+                                        <th style={{color:"white"}}>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -215,7 +224,7 @@ class Cart extends Component {
                                         <h3 style={{color:"white"}}>{this.sumAllInCart()}</h3>
                                     </div>    
                                     <br/>
-                                    <Button className="btn-lg rounded-pill px-5" color="brown">Checkout</Button>                           
+                                    <Button className="btn-lg rounded-pill px-5" color="brown" onClick={this.checkoutCart}>Checkout</Button>                           
                                     </div>
                                 </Col>
                             </Row>

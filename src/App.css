@@ -170,7 +170,7 @@ body {
 
 /* cart total float */
 .floating-cart-total{
-  position:fixed
+  position:fixed;
 }
 
 @media only screen and (max-width:760px){

@@ -49,7 +49,8 @@ export default (state=INITIAL_STATE, action)=>{
             return {...state, loading:false, successChangePasswordMessage:action.payload}
             
         
-        
+        case 'ChangePassMessageClear':
+            return {...state, changePassMessage:''}
         case 'ErrorClear':
             return INITIAL_STATE
         default:

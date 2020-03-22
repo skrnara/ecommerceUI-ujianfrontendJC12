@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import Header from './component/Header';
+import Footer from './component/Footer';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Register from './pages/Register';
@@ -11,6 +12,7 @@ import Cart from './pages/Cart';
 import ProductDetail from './pages/ProductDetail';
 import AllProducts from './pages/AllProducts';
 import SearchProduct from './pages/SearchProduct';
+import TransactionStatus from './pages/TransactionStatus';
 import { Switch, Route, Router } from 'react-router-dom';
 import Axios from 'axios'
 import { API_URL } from './supports/ApiURL';
@@ -74,9 +76,11 @@ function App({keepLogin}) {
         <Route path='/productdetail/:idprod' exact component={ProductDetail}/>
         <Route path='/manageadmin' exact component={ManageAdmin}/>
         <Route path='/cart' exact component={Cart}/>
+        <Route path='/transactionstatus' exact component={TransactionStatus}/>
         <Route path='/searchproduct/:keyword' exact component={SearchProduct}/>
         <Route path='/*' exact component={NotFound}/>
       </Switch>
+      <Footer/>
     </div>
   )
 }
