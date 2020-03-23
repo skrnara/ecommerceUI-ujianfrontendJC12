@@ -36,7 +36,6 @@ class Home extends Component {
                         </div>
                         <CardBody>
                         <CardTitle>{ val.name }</CardTitle>
-                        <CardText>{ val.description }</CardText>
                         <CardSubtitle>{ `Rp.`+ Numeral(val.price).format(0,0)}</CardSubtitle>
                         <Button className="rounded-pill btn-sm" color="brown"><a href={`/productdetail/${val.id}`} style={{color:"white"}}>View Product</a></Button>
                         </CardBody>

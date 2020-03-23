@@ -15,7 +15,7 @@ const SearchProduct = (props) => {
     })
 
     useEffect(() => {
-        Axios.get(`${API_URL}/products?_expand=category&_limit=8`)
+        Axios.get(`${API_URL}/products?_expand=category`)
         .then((res)=>{
             Axios.get(`${API_URL}/products?q=${props.match.params.keyword}`)
             .then((res)=>{
@@ -49,22 +49,21 @@ const SearchProduct = (props) => {
             return(
                 <>
                     <Fade bottom>
-                    <div className="col-md-3" style={{marginTop:"5%"}}>
-                        <Card>
-                            <CardImg top width="100%" height="100%" src={val.image} alt="Card image cap" />
-                            <div className="blackBox d-flex justify-content-center">
-                                <Link to={`/productdetail/${val.id}`} className="insideButton">
-                                    <button className="buyNowButton px-5 py-2 btn-sm" style={{marginTop:"140%"}}><div style={{color:"white"}}><MDBIcon icon="cart-plus"/></div></button>
-                                </Link>
-                            </div>
-                            <CardBody>
-                            <CardTitle>{ val.name }</CardTitle>
-                            <CardText>{ val.description }</CardText>
-                            <CardSubtitle>{ `Rp.`+ Numeral(val.price).format(0,0)}</CardSubtitle>
-                            <Button className="rounded-pill btn-sm" color="brown"><a href={`/productdetail/${val.id}`} style={{color:"white"}}>View Product</a></Button>
-                            </CardBody>
-                        </Card>
-                    </div>
+                        <div className="col-md-3" style={{marginTop:"5%"}}>
+                            <Card>
+                                <CardImg top width="100%" height="100%" src={val.image} alt="Card image cap" />
+                                <div className="blackBox d-flex justify-content-center">
+                                    <Link to={`/productdetail/${val.id}`} className="insideButton">
+                                        <button className="buyNowButton px-5 py-2 btn-sm" style={{marginTop:"140%"}}><div style={{color:"white"}}><MDBIcon icon="cart-plus"/></div></button>
+                                    </Link>
+                                </div>
+                                <CardBody>
+                                <CardTitle>{ val.name }</CardTitle>
+                                <CardSubtitle>{ `Rp.`+ Numeral(val.price).format(0,0)}</CardSubtitle>
+                                <Button className="rounded-pill btn-sm" color="brown"><a href={`/productdetail/${val.id}`} style={{color:"white"}}>View Product</a></Button>
+                                </CardBody>
+                            </Card>
+                        </div>
                     </Fade>
                 </>
             )

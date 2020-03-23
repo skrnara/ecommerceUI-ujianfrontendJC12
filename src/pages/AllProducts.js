@@ -29,7 +29,6 @@ class AllProducts extends Component {
                             </div>
                             <CardBody>
                             <CardTitle>{ val.name }</CardTitle>
-                            <CardText>{ val.description }</CardText>
                             <CardSubtitle>{ `Rp.`+ Numeral(val.price).format(0,0)}</CardSubtitle>
                             <Button className="rounded-pill btn-sm" color="brown"><a href={`/productdetail/${val.id}`} style={{color:"white"}}>View Product</a></Button>
                             </CardBody>
@@ -67,6 +66,9 @@ class AllProducts extends Component {
         return (
             <>
                 <div style={{marginTop:"120px"}}> 
+                    <div className="row" style={{backgroundColor:"grey", height:"100px"}}>
+                        
+                    </div>
                     <div className="row" style={{paddingBottom:"5%"}}>                      
                         {this.renderProducts()}
                     </div>

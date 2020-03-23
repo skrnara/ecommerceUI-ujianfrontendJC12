@@ -18,30 +18,35 @@ class Cart extends Component {
     getAllData=()=>{
         Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${this.props.User.id}&status=oncart`)
         .then((res)=>{
-            var newArrForProducts=[]
-            // console.log(res.data[0].transactiondetails)
-            res.data[0].transactiondetails.forEach(element => {
-                newArrForProducts.push(Axios.get(`${API_URL}/products/${element.productId}`))
-            })          
-            
-            Axios.all(newArrForProducts)
-            .then((res2)=>{
-                // console.log(res2)
-                res2.forEach((val, index)=>{
-                    res.data[0].transactiondetails[index].productData=val.data
-                })
+            if(res.data.length){
+                var newArrForProducts=[]
                 // console.log(res.data[0].transactiondetails)
-                this.setState({cartContent:res.data[0].transactiondetails})
+                res.data[0].transactiondetails.forEach(element => {
+                    newArrForProducts.push(Axios.get(`${API_URL}/products/${element.productId}`))
+                })          
+                
+                Axios.all(newArrForProducts)
+                .then((res2)=>{
+                    // console.log(res2)
+                    res2.forEach((val, index)=>{
+                        res.data[0].transactiondetails[index].productData=val.data
+                    })
+                    // console.log(res.data[0].transactiondetails)
+                    this.setState({cartContent:res.data[0].transactiondetails})
+    
+                    //cart counter 
+                    if(this.state.cartContent.length>0){
+                        var totalQtyOnCart=this.state.cartContent.reduce((a, b)=>({qty:a.qty+b.qty})).qty
+                        this.props.cartCounter(totalQtyOnCart)      
+                    }
+                    else{
+                        this.props.cartCounter(0)
+                    }                
+                })
+            }
+            else{
 
-                //cart counter 
-                if(this.state.cartContent.length>0){
-                    var totalQtyOnCart=this.state.cartContent.reduce((a, b)=>({qty:a.qty+b.qty})).qty
-                    this.props.cartCounter(totalQtyOnCart)      
-                }
-                else{
-                    this.props.cartCounter(0)
-                }                
-            })
+            }
 
         })
         .catch ((err)=>{
@@ -155,7 +160,7 @@ class Cart extends Component {
                       if(result.value){
                         this.getAllData()                    
                       }
-                  })
+                    })
                 }).catch((err)=>{
                     console.log(err)
                 })
@@ -170,7 +175,17 @@ class Cart extends Component {
             console.log(res.data[0].id)
             Axios.patch(`${API_URL}/transactions/${res.data[0].id}`, {status:'waiting payment'})
             .then((res2)=>{
-               this.getAllData()
+                Swal.fire({
+                    title:'Cart Sucessfully Processed',
+                    text:'You can check your transaction and pay in Transaction Status menu',
+                    icon:'success',
+                    confirmButtonColor: '#000'
+                }).then((result)=>{
+                    if(result.value){
+                        this.setState({cartContent:[]})
+                        this.props.cartCounter(0)                                           
+                    }
+                })
             })
             .catch((err)=>{
                 console.log(err)
@@ -179,6 +194,7 @@ class Cart extends Component {
         .catch((err)=>{
             console.log(err)
         })
+
 
     }
 
@@ -212,7 +228,7 @@ class Cart extends Component {
                                 </Table>
                                 </Col>
                                 <Col className="col-12 col-md-4">
-                                    <div className="floating-cart-total">
+                                    <div>
                                     <div style={{backgroundColor:"#a89485", borderRadius:"5px", paddingBottom:"20px"}}>
                                         <h3 style={{borderBottom:"1px solid white", color:"white"}} className="p-4">Your Purchase:</h3>
                                         <h6 style={{color:"white"}}>
