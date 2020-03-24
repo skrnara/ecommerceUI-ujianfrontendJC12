@@ -11,7 +11,6 @@ import ManageAdmin from './pages/ManageAdmin';
 import Cart from './pages/Cart';
 import ProductDetail from './pages/ProductDetail';
 import AllProducts from './pages/AllProducts';
-import SearchProduct from './pages/SearchProduct';
 import TransactionStatus from './pages/TransactionStatus';
 import ManageTransactions from './pages/ManageTransactions';
 import { Switch, Route, Router } from 'react-router-dom';
@@ -79,7 +78,6 @@ function App({keepLogin}) {
         <Route path='/cart' exact component={Cart}/>
         <Route path='/transactionstatus' exact component={TransactionStatus}/>
         <Route path='/managetransactions' exact component={ManageTransactions}/>
-        <Route path='/searchproduct/:keyword' exact component={SearchProduct}/>
         <Route path='/*' exact component={NotFound}/>
       </Switch>
       <Footer/>

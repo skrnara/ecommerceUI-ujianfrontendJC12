@@ -15,7 +15,6 @@ const ChangePassword = (props) => {
         confirmNewChangedPassword:''
     })
 
-    const[moveToLogin, setMoveToLogin]=useState(false)
     const[modal, setModal]=useState(true)
     const toggle = () => setModal(!modal);
     const {className} = props;
@@ -54,11 +53,6 @@ const ChangePassword = (props) => {
     
     const redirectChangePasswordToLogin=()=>{
         localStorage.clear()
-        setMoveToLogin(true)
-    }
-
-    if(moveToLogin){
-        return <Redirect to="/login"/>
     }
     
     if(props.isLoggedIn){

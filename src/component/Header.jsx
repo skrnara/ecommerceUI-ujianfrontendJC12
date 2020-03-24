@@ -7,16 +7,11 @@ import { Badge, Modal, ModalBody, ModalHeader, ModalFooter, Button } from 'react
 import { connect } from 'react-redux';
 import { cartCounter } from './../redux/actions'
 import { GiShoppingCart } from 'react-icons/gi';
-import { FiSearch } from 'react-icons/fi';
-import { Redirect } from 'react-router-dom';
-import Axios from 'axios';
-import { API_URL } from './../supports/ApiURL';
 
 class Header extends Component {
   state = {
     isOpen: false,
-    redirect: null,
-    modalSearch:false
+    redirect: null
   }
 
   toggleCollapse = () => {
@@ -27,37 +22,9 @@ class Header extends Component {
     localStorage.clear()
   }
 
-  toggleSearch=()=>{
-    this.setState({modalSearch:!this.state.modalSearch})
-  }
-  
-  onClickSearch=()=>{
-    var searchKeyword=this.state.inputSearchBar
-    this.setState({ redirect: `/searchproduct/${searchKeyword}` })    
-  }
-
-  render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
-    }
-    
+  render() {    
     return (
       <>
-        <div>          
-          <Modal isOpen={this.state.modalSearch} toggle={this.toggleSearch}>
-            <ModalHeader toggle={this.toggleSearch}>Search</ModalHeader>
-            <ModalBody>
-              <input type="text" className="form-control" onChange={(e)=>this.setState({inputSearchBar:e.target.value})}/>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="brown" className="btn-sm rounded-pill py-2 px-4" onClick={this.onClickSearch}>Search</Button>{' '}
-              <Button color="grey" className="btn-sm rounded-pill py-2 px-4" onClick={this.toggleSearch}>Cancel</Button>
-            </ModalFooter>
-          </Modal>
-        </div>
-
-
-
       <MDBNavbar light color="white"  expand="md" position="fixed" fixed="top" style={{height:"120px"}} className="shadow-sm p-3 mb-5 bg-white rounded">
         <MDBNavbarBrand href="/">
           <h2 style={{letterSpacing:"8px", textTransform:"uppercase", color:"black", fontWeight:"bolder"}}>Minimalés</h2>
@@ -115,9 +82,6 @@ class Header extends Component {
                 </MDBNavLink>
                 
               }
-            </MDBNavItem> 
-            <MDBNavItem>  
-              <FiSearch onClick={this.toggleSearch} style={{fontSize:"30px", color:"black", marginLeft:"-45px", paddingTop:"10px"}}/>                       
             </MDBNavItem>           
           </MDBNavbarNav>
         </MDBCollapse>
