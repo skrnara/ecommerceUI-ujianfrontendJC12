@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Axios from 'axios'
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, Button } from 'reactstrap';
+import { Card, CardImg, CardBody, CardTitle, CardSubtitle, Button } from 'reactstrap';
 import { MDBIcon } from 'mdbreact';
 import { API_URL } from './../supports/ApiURL';
 import Numeral from 'numeral';
@@ -19,7 +19,7 @@ class AllProducts extends Component {
             return(
                 <>
                     <Fade bottom>
-                    <div className="col-md-3" style={{marginTop:"5%"}}>
+                    <div className="col-md-3" style={{marginTop:"4%"}}>
                         <Card>
                             <CardImg top width="100%" height="100%" src={val.image} alt="Card image cap" />
                             <div className="blackBox d-flex justify-content-center">
@@ -66,8 +66,21 @@ class AllProducts extends Component {
         return (
             <>
                 <div style={{marginTop:"120px"}}> 
-                    <div className="row" style={{backgroundColor:"grey", height:"100px"}}>
-                        
+                    <div className="row d-flex justify-content-center" style={{backgroundColor:"lightgrey"}}>
+                        <div>
+                            show by category
+                        </div>                        
+                    </div>
+                    <div className="row d-flex justify-content-center" style={{backgroundColor:"lightgrey", height:"200px"}}>
+                        <div>
+                            hello
+                        </div>   
+                        <div>
+                            hello
+                        </div>   
+                        <div>
+                            hello
+                        </div>                        
                     </div>
                     <div className="row" style={{paddingBottom:"5%"}}>                      
                         {this.renderProducts()}

@@ -50,8 +50,8 @@ class Header extends Component {
               <input type="text" className="form-control" onChange={(e)=>this.setState({inputSearchBar:e.target.value})}/>
             </ModalBody>
             <ModalFooter>
-              <Button color="brown" className="btn-sm rounded-pill py-2 px-4" onClick={this.onClickSearch}>Do Something</Button>{' '}
-              <Button color="grey" className="btn-sm rounded-pill py-2 px-4"  onClick={this.toggleSearch}>Cancel</Button>
+              <Button color="brown" className="btn-sm rounded-pill py-2 px-4" onClick={this.onClickSearch}>Search</Button>{' '}
+              <Button color="grey" className="btn-sm rounded-pill py-2 px-4" onClick={this.toggleSearch}>Cancel</Button>
             </ModalFooter>
           </Modal>
         </div>
@@ -64,15 +64,7 @@ class Header extends Component {
         </MDBNavbarBrand>
         <MDBNavbarToggler onClick={this.toggleCollapse} />
         <MDBCollapse id="navbarCollapse3" isOpen={this.state.isOpen} navbar>
-          <MDBNavbarNav left>             
-            {/* <MDBNavItem>
-              <MDBFormInline className="md-form mr-auto m-0">
-                <input className="form-control mr-sm-2" type="text" placeholder="Search for products..." aria-label="Search" style={{fontSize:"smaller"}} onChange={(e)=>this.setState({inputSearchBar:e.target.value})}/>
-                <MDBBtn outline color="black" size="sm" type="submit" className="mr-auto" className="rounded-pill" onClick={this.onClickSearch}>
-                  <GoSearch/>
-                </MDBBtn>
-              </MDBFormInline>
-            </MDBNavItem> */}
+          <MDBNavbarNav left>   
           </MDBNavbarNav>
 
           <MDBNavbarNav right>
@@ -90,7 +82,7 @@ class Header extends Component {
                         <MDBDropdownItem href="/transactionstatus">Transaction Status</MDBDropdownItem>
                         :
                         <>
-                        <MDBDropdownItem href="/">Manage Transaction</MDBDropdownItem>
+                        <MDBDropdownItem href="/managetransactions">Manage Transaction</MDBDropdownItem>
                         <MDBDropdownItem href="/manageadmin">Manage Products</MDBDropdownItem>
                         </>
                       }

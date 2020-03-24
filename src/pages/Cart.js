@@ -93,6 +93,7 @@ class Cart extends Component {
     }
 
     renderCartContentData=()=>{
+        console.log(this.state.cartContent[0].qty)
         return this.state.cartContent.map((val, index)=>{
             return (
                 <tr key={index}>

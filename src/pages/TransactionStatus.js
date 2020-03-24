@@ -17,7 +17,10 @@ const TransactionStatus = (props) => {
 
     const[paymentCC, setPaymentCC]=useState('')    
     const[modalPayment, setModalPayment]=useState(false)
-    const togglePayment = () => setModalPayment(!modalPayment);
+    const togglePayment = () => setModalPayment(!modalPayment)
+
+    const[modalDetailProduct, setModalDetailProduct]=useState(false)
+    const toggleDetailProduct = () => setModalDetailProduct(!modalDetailProduct);
 
     useEffect(() => {
         if(props.User.role==="user"){
@@ -84,7 +87,7 @@ const TransactionStatus = (props) => {
                 return sum=sum+val.productData.price*val.qty
             })
 
-            return ChangeToRp(sum) 
+            return sum 
         }
         else{}        
     }
@@ -122,7 +125,39 @@ const TransactionStatus = (props) => {
             alert('Please fill credit card number')
         }
         else{
-            console.log('hello')
+            Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${props.User.id}&status=waiting%20payment`)
+            .then((res)=>{
+
+                var objPut={
+                    status: "confirmed and waiting process",
+                    userId: props.User.id,
+                    id: res.data[0].id,
+                    method:"cc",
+                    total:totalSum()
+                }
+
+                Axios.put(`${API_URL}/transactions/${res.data[0].id}?&userId=${props.User.id}`, objPut)
+                .then((res2)=>{
+                    Swal.fire({
+                        title:'Payment Accepted',
+                        text:'Please wait for our admin to process your transaction',
+                        icon:'success',
+                        confirmButtonColor: '#000'
+                    }).then((result)=>{
+                        if(result.value){
+                           getData() 
+                           setModalPayment(!modalPayment)                                          
+                        }
+                    })
+                    
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+            })
+            .catch((err)=>{
+                console.log(err)
+            }) 
         }
     }
 
@@ -145,16 +180,27 @@ const TransactionStatus = (props) => {
             return (
                 <div style={{paddingTop:"200px"}}>   
                     <Modal isOpen={modalPayment} toggle={togglePayment}>
-                        <ModalHeader toggle={togglePayment}>Input your CC number</ModalHeader>
+                        <ModalHeader toggle={togglePayment}>Payment</ModalHeader>
                         <ModalBody>
-                            Total of {totalSum()}
+                            Total of {ChangeToRp(totalSum())}
                             <br/><br/>
+                            <select className="form-control">
+                                <option hidden value="select payment">Select...</option>
+                                <option value="select payment">Credit Card</option>
+                            </select>
                             <input type="number" className="form-control" onChange={(e)=>setPaymentCC({paymentCC:e.target.value})}/>
                         </ModalBody>
                         <ModalFooter>
                         <Button color="brown" className="btn-sm rounded-pill py-2 px-4" onClick={payTransaction}>Pay</Button>{' '}
                         <Button color="grey" className="btn-sm rounded-pill py-2 px-4" onClick={togglePayment}>Cancel</Button>
                         </ModalFooter>
+                    </Modal>
+
+                    <Modal isOpen={modalDetailProduct} toggle={toggleDetailProduct}>
+                        <ModalHeader toggle={toggleDetailProduct}>Details</ModalHeader>
+                        <ModalBody>
+                            {renderDataProductToUser()}
+                        </ModalBody>
                     </Modal>
 
                     <Container>
@@ -170,24 +216,34 @@ const TransactionStatus = (props) => {
                                         <th style={{color:"white"}}>Products</th>
                                         <th style={{color:"white"}}>Total</th>
                                         <th style={{color:"white"}}>Status</th>
-                                        <th style={{color:"white"}}>Action</th>
+                                        {
+                                            mainData.status==="waiting payment"?
+                                            <th style={{color:"white"}}>Action</th>
+                                            :
+                                            null
+                                        }
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr style={{textAlign:"center"}}>
                                         <td>
-                                            {renderDataProductToUser()}
+                                            <Button className="btn-sm rounded-pill px-5" color="black" onClick={toggleDetailProduct}>Details</Button>      
                                         </td>
                                         <td>
-                                            {totalSum()}
+                                            {ChangeToRp(totalSum())}
                                         </td>
                                         <td>
                                             {mainData.status}
                                         </td>
-                                        <td>
-                                            <Button className="btn-sm rounded-pill px-5" color="brown" onClick={togglePayment}>Pay</Button>      
-                                            <Button className="btn-sm rounded-pill px-5" color="grey" onClick={cancelPendingTransaction}>Cancel Transaction</Button>                 
-                                        </td>
+                                        {
+                                            mainData.status==="waiting payment"?
+                                            <td>
+                                                <Button className="btn-sm rounded-pill px-5" color="brown" onClick={togglePayment}>Pay</Button>      
+                                                <Button className="btn-sm rounded-pill px-5" color="grey" onClick={cancelPendingTransaction}>Cancel Transaction</Button>                 
+                                            </td>
+                                            :
+                                            null
+                                        }
                                     </tr>
                                 </tbody>
                             </Table>

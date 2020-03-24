@@ -17,10 +17,9 @@ const SearchProduct = (props) => {
     useEffect(() => {
         Axios.get(`${API_URL}/products?_expand=category`)
         .then((res)=>{
-            Axios.get(`${API_URL}/products?q=${props.match.params.keyword}`)
+            Axios.get(`${API_URL}/products?name_like=${props.match.params.keyword}`)
             .then((res)=>{
-                console.log(res.data)
-                setSearchData({...searchData, dataToShow:res.data})
+                
                 if(props.User.role==="user"){
                     Axios.get(`${API_URL}/transactions?_embed=transactiondetails&userId=${props.User.id}&status=oncart`)
                     .then((resoncart)=>{
@@ -32,7 +31,10 @@ const SearchProduct = (props) => {
                     .catch((err)=>{
                         console.log(err)
                     })
-                }            
+                }  
+                
+                console.log(res.data)
+                setSearchData({...searchData, dataToShow:res.data})
             })
             .catch((err)=>{
                 console.log(err)
